@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.jala.university</groupId>
+  <artifactId>external-payment-module</artifactId>
+  <version>1.0-RELEASE</version>
+
+  <name>external-payment-module</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <commons.module.version>1.0-SNAPSHOT</commons.module.version>
+    <spring.boot.version>3.2.4</spring.boot.version>
+    <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
+    <lombok.version>1.18.28</lombok.version>
+    <javafx.version>22</javafx.version>
+    <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
+  </properties>
+
+  <dependencies>
+    <!-- Local Dependency   -->
+    <dependency>
+      <groupId>org.jala.university</groupId>
+      <artifactId>commons-module</artifactId>
+      <version>${commons.module.version}</version>
+    </dependency>
+    <!--    Third-party libs-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>${jakarta.persistence.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <!-- Unit Test Dependecies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.0-M1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.5.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- Should be included when add dependecy to other gitlab project
+    <repositories>
+      <repository>
+        <id>base-module-repo</id>
+        <url>https://gitlab.com/api/v4/projects/{project_code}/packages/maven</url>
+      </repository>
+    </repositories> -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>${javafx.maven.plugin.version}</version>
+        <configuration>
+          <mainClass>org.jala.university.presentation.MainView</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
