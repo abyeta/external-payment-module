@@ -1,5 +1,7 @@
 package org.jala.university.presentation.controller;
 
-public class MainViewController {
+import org.jala.university.commons.presentation.BaseController;
+
+public class MainViewController extends BaseController {
 
 }
