@@ -5,11 +5,12 @@ import org.jala.university.application.mapper.SampleEntityMapper;
 import org.jala.university.domain.entity.SampleEntity;
 import org.jala.university.domain.repository.SampleEntityRepository;
 
-public class ExternalPaymentServiceImpl implements ExternalPaymentService {
+public final class ExternalPaymentServiceImpl implements ExternalPaymentService {
     private final SampleEntityRepository sampleEntityRepository;
     private final SampleEntityMapper sampleEntityMapper;
 
-    public ExternalPaymentServiceImpl(SampleEntityRepository sampleEntityRepository, SampleEntityMapper sampleEntityMapper) {
+    public ExternalPaymentServiceImpl(SampleEntityRepository sampleEntityRepository,
+                                      SampleEntityMapper sampleEntityMapper) {
         this.sampleEntityRepository = sampleEntityRepository;
         this.sampleEntityMapper = sampleEntityMapper;
     }

@@ -5,7 +5,7 @@
 
   <groupId>org.jala.university</groupId>
   <artifactId>external-payment-module</artifactId>
-  <version>1.0-RELEASE</version>
+  <version>1.0-SNAPSHOT</version>
 
   <name>external-payment-module</name>
 
@@ -70,7 +70,7 @@
     </dependency>
   </dependencies>
 
-  <!-- Should be included when add dependecy to other gitlab project
+  <!-- Should be included when add dependency to other gitlab project
     <repositories>
       <repository>
         <id>base-module-repo</id>
@@ -79,6 +79,24 @@
     </repositories> -->
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>

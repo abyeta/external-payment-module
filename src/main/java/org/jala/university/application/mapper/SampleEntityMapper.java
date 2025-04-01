@@ -4,7 +4,8 @@ import org.jala.university.application.dto.SampleEntityDto;
 import org.jala.university.commons.application.mapper.Mapper;
 import org.jala.university.domain.entity.SampleEntity;
 
-public class SampleEntityMapper implements Mapper<SampleEntity, SampleEntityDto> {
+public final class SampleEntityMapper
+        implements Mapper<SampleEntity, SampleEntityDto> {
 
     @Override
     public SampleEntityDto mapTo(SampleEntity sampleEntity) {

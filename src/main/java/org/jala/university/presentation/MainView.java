@@ -5,7 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.jala.university.commons.presentation.ViewSwitcher;
-public class MainView extends Application {
+public final class MainView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
