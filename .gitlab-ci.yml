@@ -1,28 +1,47 @@
-image: maven:3.9.4-jdk-17
+image: maven:3.9.4-openjdk-17
 
 stages:
   - build
+  - test
+  - deploy
 
-variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+before_script:
+  - echo "Configurando el entorno de Maven..."
+  - mvn --version
+  - java -version
 
-cache:
-  key: "$CI_JOB_NAME"
-  paths:
-    - .m2/repository
-
-build:
+# Etapa de construcción de los módulos dependientes
+build_dependencies:
   stage: build
   script:
-    - echo "Compilando commons-module"
+    - echo "Clonando y construyendo commons-module..."
     - git clone https://gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/commons-module.git
     - cd commons-module
     - mvn clean install
     - cd ..
-    - echo "Compilando account-module"
+    - echo "Clonando y construyendo account-module..."
     - git clone https://gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/account-module.git
     - cd account-module
     - mvn clean install
     - cd ..
-    - echo "Compilando external-payment-module"
+
+# Etapa de construcción del módulo principal
+build_external_payment_module:
+  stage: build
+  script:
+    - echo "Construyendo external-payment-module..."
     - mvn clean package
+
+# Etapa de pruebas unitarias
+test:
+  stage: test
+  script:
+    - echo "Ejecutando pruebas unitarias..."
+    - mvn test
+
+# Etapa de despliegue (ajustar según sea necesario)
+deploy:
+  stage: deploy
+  script:
+    - echo "Desplegando la aplicación..."
+    # Aquí puedes agregar los comandos necesarios para desplegar tu aplicación
