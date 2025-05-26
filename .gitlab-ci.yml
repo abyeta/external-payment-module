@@ -1,12 +1,14 @@
+default:
+  image: maven:3.9.4-eclipse-temurin-17
+
 stages:
   - build
   - test
   - analyze
 
 variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_CLI_OPTS: "-B"
 
-# Etapa de compilación
 build:
   stage: build
   script:
@@ -14,7 +16,6 @@ build:
   only:
     - merge_requests
 
-# Etapa de pruebas
 test:
   stage: test
   script:
@@ -26,7 +27,6 @@ test:
   only:
     - merge_requests
 
-# Análisis estático con Checkstyle (o PMD si prefieren)
 analyze:
   stage: analyze
   script:
