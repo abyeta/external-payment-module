@@ -3,14 +3,7 @@ image: maven:3.9.4-openjdk-17
 stages:
   - build
   - test
-  - deploy
 
-before_script:
-  - echo "Configurando el entorno de Maven..."
-  - mvn --version
-  - java -version
-
-# Etapa de construcción de los módulos dependientes
 build_dependencies:
   stage: build
   script:
@@ -25,23 +18,14 @@ build_dependencies:
     - mvn clean install
     - cd ..
 
-# Etapa de construcción del módulo principal
 build_external_payment_module:
   stage: build
   script:
     - echo "Construyendo external-payment-module..."
     - mvn clean package
 
-# Etapa de pruebas unitarias
 test:
   stage: test
   script:
     - echo "Ejecutando pruebas unitarias..."
     - mvn test
-
-# Etapa de despliegue (ajustar según sea necesario)
-deploy:
-  stage: deploy
-  script:
-    - echo "Desplegando la aplicación..."
-    # Aquí puedes agregar los comandos necesarios para desplegar tu aplicación
