@@ -1,24 +1,27 @@
 image: maven:3.8.4-openjdk-17
 
+variables:
+  MAVEN_CLI_OPTS: "-s .maven/settings.xml -B"
+
 stages:
   - build
   - test
 
 before_script:
-  - echo "Configurando el entorno de Maven..."
+  - echo "Verificando versiones..."
   - mvn --version
   - java -version
 
-# Etapa de construcción del módulo principal
+# Etapa de construcción
 build:
   stage: build
   script:
-    - echo "Construyendo el módulo principal..."
-    - mvn clean package
+    - echo "Construyendo el módulo external-payment..."
+    - mvn $MAVEN_CLI_OPTS clean package
 
-# Etapa de pruebas unitarias
+# Etapa de test
 test:
   stage: test
   script:
     - echo "Ejecutando pruebas unitarias..."
-    - mvn test
+    - mvn $MAVEN_CLI_OPTS test
