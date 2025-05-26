@@ -1,29 +1,22 @@
-image: maven:3.9.4-openjdk-17-slim
+image: maven:3.8.4-openjdk-17
 
 stages:
   - build
   - test
 
-build_dependencies:
-  stage: build
-  script:
-    - echo "Clonando y construyendo commons-module..."
-    - git clone https://gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/commons-module.git
-    - cd commons-module
-    - mvn clean install
-    - cd ..
-    - echo "Clonando y construyendo account-module..."
-    - git clone https://gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/account-module.git
-    - cd account-module
-    - mvn clean install
-    - cd ..
+before_script:
+  - echo "Configurando el entorno de Maven..."
+  - mvn --version
+  - java -version
 
-build_external_payment_module:
+# Etapa de construcción del módulo principal
+build:
   stage: build
   script:
-    - echo "Construyendo external-payment-module..."
+    - echo "Construyendo el módulo principal..."
     - mvn clean package
 
+# Etapa de pruebas unitarias
 test:
   stage: test
   script:
