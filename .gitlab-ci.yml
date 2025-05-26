@@ -1,0 +1,20 @@
+image: maven:3.9.4-openjdk-17
+
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - echo "Compilando commons-module"
+    - git clone https://gitlab.com/org-jala-university/commons-module.git
+    - cd commons-module
+    - mvn clean install
+    - cd ..
+    - echo "Compilando account-module"
+    - git clone https://gitlab.com/org-jala-university/account-module.git
+    - cd account-module
+    - mvn clean install
+    - cd ..
+    - echo "Compilando external-payment-module"
+    - mvn clean package
