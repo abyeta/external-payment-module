@@ -1,13 +1,17 @@
-image: maven:3.9.0-eclipse-temurin-17
+variables:
+  GITLAB_TOKEN: "glpat-gmtp2CsLFQGZp68WEvBG"
+  MAVEN_CLI_OPTS: "-B -q"
+
+cache:
+  key: maven-repo
+  paths:
+    - .m2/repository
 
 stages:
   - clean-compile
   - test
   - build
   - release
-
-variables:
-  GITLAB_TOKEN: "glpat-gmtp2CsLFQGZp68WEvBG"
 
 install-commons:
   stage: clean-compile
