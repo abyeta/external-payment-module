@@ -16,45 +16,20 @@ stages:
   - build
   - release
 
-install-commons:
-  stage: clean-compile
-  script:
-    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/commons-module.git
-    - cd commons-module
-    - mvn $MAVEN_CLI_OPTS clean install
-  artifacts:
-    paths:
-      - .m2/repository
-    expire_in: 1 hour
-
-install-account:
-  stage: clean-compile
-  needs: ['install-commons']
-  dependencies:
-    - install-commons
-  script:
-    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/account-module.git
-    - cd account-module
-    - mvn $MAVEN_CLI_OPTS clean install
-  artifacts:
-    paths:
-      - .m2/repository
-    expire_in: 1 hour
-
 external-payment-compile:
   stage: clean-compile
-  needs: ['install-account', 'install-commons']
-  dependencies:
-    - install-account
-    - install-commons
   script:
-    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/external-payment-module.git
-    - cd external-payment-module
+    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone.git
+    - cd capstone/commons-module
+    - mvn $MAVEN_CLI_OPTS clean install
+    - cd ../account-module
+    - mvn $MAVEN_CLI_OPTS clean install
+    - cd ../external-payment-module
     - mvn $MAVEN_CLI_OPTS clean compile
   artifacts:
     paths:
       - .m2/repository
-      - external-payment-module
+      - capstone/external-payment-module
     expire_in: 1 hour
 
 external-payment-test:
@@ -63,12 +38,12 @@ external-payment-test:
   dependencies:
     - external-payment-compile
   script:
-    - cd external-payment-module
+    - cd capstone/external-payment-module
     - mvn $MAVEN_CLI_OPTS test
   artifacts:
     paths:
       - .m2/repository
-      - external-payment-module
+      - capstone/external-payment-module
     expire_in: 1 hour
 
 external-payment-build:
@@ -77,9 +52,9 @@ external-payment-build:
   dependencies:
     - external-payment-test
   script:
-    - cd external-payment-module
+    - cd capstone/external-payment-module
     - mvn $MAVEN_CLI_OPTS package
   artifacts:
     paths:
-      - external-payment-module/target/*.jar
+      - capstone/external-payment-module/target/*.jar
     expire_in: 30 days
