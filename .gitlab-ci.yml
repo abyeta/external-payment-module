@@ -29,30 +29,30 @@ install-account:
       - .m2/repository
     expire_in: 1 hour
 
-# Paso 3: Compilar external-payments-module (después de account)
-external-payments-compile:
+# Paso 3: Compilar external-payment-module (después de account)
+external-payment-compile:
   stage: clean-compile
   needs: ['install-account', 'install-commons']
   script:
     - git clone https://gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/external-payment-module.git
-    - cd external-payments-module
+    - cd external-payment-module
     - mvn $MAVEN_CLI_OPTS clean compile
 
-# Opcional: Agrega verify/test/build/release para external-payments-module también
-external-payments-test:
+# Opcional: Agrega verify/test/build/release para external-payment-module también
+external-payment-test:
   stage: test
-  needs: ['external-payments-compile']
+  needs: ['external-payment-compile']
   script:
-    - cd external-payments-module
+    - cd external-payment-module
     - mvn $MAVEN_CLI_OPTS test
 
-external-payments-build:
+external-payment-build:
   stage: build
-  needs: ['external-payments-compile', 'external-payments-test']
+  needs: ['external-payment-compile', 'external-payment-test']
   script:
-    - cd external-payments-module
+    - cd external-payment-module
     - mvn $MAVEN_CLI_OPTS package
   artifacts:
     paths:
-      - external-payments-module/target/*.jar
+      - external-payment-module/target/*.jar
     expire_in: 30 days
