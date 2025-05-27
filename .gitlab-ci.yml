@@ -1,4 +1,4 @@
-image: maven:3.9.3-openjdk-17
+image: maven:3.9.0-eclipse-temurin-17
 
 stages:
   - clean-compile
@@ -9,7 +9,6 @@ stages:
 variables:
   GITLAB_TOKEN: "glpat-gmtp2CsLFQGZp68WEvBG"
 
-# Paso 1: Instalar commons-module
 install-commons:
   stage: clean-compile
   script:
@@ -21,7 +20,6 @@ install-commons:
       - .m2/repository
     expire_in: 1 hour
 
-# Paso 2: Instalar account-module (después de commons)
 install-account:
   stage: clean-compile
   needs: ['install-commons']
@@ -42,7 +40,6 @@ external-payment-compile:
     - cd external-payment-module
     - mvn $MAVEN_CLI_OPTS clean compile
 
-# Test external-payment-module
 external-payment-test:
   stage: test
   needs: ['external-payment-compile']
@@ -50,7 +47,6 @@ external-payment-test:
     - cd external-payment-module
     - mvn $MAVEN_CLI_OPTS test
 
-# Build external-payment-module
 external-payment-build:
   stage: build
   needs: ['external-payment-compile', 'external-payment-test']
