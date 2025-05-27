@@ -1,9 +1,9 @@
-image: maven:3.9.2-openjdk-17
+image: maven:3.9.6-eclipse-temurin-17
 
 variables:
   GITLAB_TOKEN: "glpat-gmtp2CsLFQGZp68WEvBG"
   MAVEN_CLI_OPTS: "-B -q"
-  MAVEN_USER_HOME: "$CI_PROJECT_DIR/.m2"  # Para cachear repo Maven dentro del proyecto
+  MAVEN_USER_HOME: "$CI_PROJECT_DIR/.m2"
 
 cache:
   key: maven-repo
