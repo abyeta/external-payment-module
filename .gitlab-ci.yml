@@ -73,9 +73,8 @@ external-payment-test:
 
 external-payment-build:
   stage: build
-  needs: ['external-payment-compile', 'external-payment-test']
+  needs: ['external-payment-test']
   dependencies:
-    - external-payment-compile
     - external-payment-test
   script:
     - cd external-payment-module
