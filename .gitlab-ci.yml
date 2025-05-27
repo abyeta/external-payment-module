@@ -19,7 +19,7 @@ stages:
 install-commons:
   stage: clean-compile
   script:
-    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/seccion-a/capstone/commons-module.git
+    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/commons-module.git
     - cd commons-module
     - mvn $MAVEN_CLI_OPTS clean install
   artifacts:
@@ -33,7 +33,7 @@ install-account:
   dependencies:
     - install-commons
   script:
-    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/seccion-a/capstone/account-module.git
+    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/account-module.git
     - cd account-module
     - mvn $MAVEN_CLI_OPTS clean install
   artifacts:
@@ -48,7 +48,7 @@ external-payment-compile:
     - install-account
     - install-commons
   script:
-    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/seccion-a/capstone/external-payment-module.git
+    - git clone https://oauth2:${GITLAB_TOKEN}@gitlab.com/jala-university1/cohort-4/oficial-es-desarrollo-de-software-2-cssd-125.ga.t1.25.m2/secci-n-a/capstone/external-payment-module.git
     - cd external-payment-module
     - mvn $MAVEN_CLI_OPTS clean compile
   artifacts:
