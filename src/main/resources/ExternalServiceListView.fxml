@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="org.jala.university.presentation.controller.ExternalServiceListController">
+  <children>
+    <TableView fx:id="tableExternalServices" prefWidth="600" prefHeight="400">
+      <columns>
+        <TableColumn fx:id="colName" text="Service Name" prefWidth="200"/>
+        <TableColumn fx:id="colCode" text="Registration Code" prefWidth="200"/>
+      </columns>
+    </TableView>
+  </children>
+</AnchorPane>

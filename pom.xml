@@ -50,6 +50,14 @@
       <artifactId>javafx-controls</artifactId>
       <version>${javafx.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.2.224</version>
+      <scope>runtime</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
@@ -69,6 +77,8 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+
 
   <!-- Should be included when add dependency to other gitlab project
     <repositories>
@@ -107,4 +117,6 @@
       </plugin>
     </plugins>
   </build>
+
+
 </project>

@@ -14,7 +14,6 @@ public final class ExternalPaymentServiceImpl implements ExternalPaymentService 
         this.sampleEntityRepository = sampleEntityRepository;
         this.sampleEntityMapper = sampleEntityMapper;
     }
-    // Here should be added all the functionality to handle the business logic
     @Override
     public SampleEntityDto doSomething(SampleEntityDto sampleEntityDto) {
         SampleEntity saved = sampleEntityRepository.save(sampleEntityMapper.mapFrom(sampleEntityDto));
