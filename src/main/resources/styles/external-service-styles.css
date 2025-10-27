@@ -1,0 +1,226 @@
+/* ========================================
+   External Service Registration Styles
+   ======================================== */
+
+/* Root Container */
+.root-container {
+    -fx-background-color: #f8f9fa;
+    -fx-alignment: center;
+}
+
+/* Header Section */
+.header-section {
+    -fx-padding: 0 0 20 0;
+}
+
+.page-title {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.page-description {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 14px;
+}
+
+/* Form Container */
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+}
+
+.form-grid {
+    -fx-padding: 10 0 10 0;
+}
+
+/* Field Labels */
+.field-label {
+    -fx-text-fill: #212529;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Text Fields */
+.text-field {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px;
+    -fx-font-size: 13px;
+    -fx-pref-height: 40px;
+}
+
+.text-field:focused {
+    -fx-border-color: #1173d4;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+}
+
+.text-field.error {
+    -fx-border-color: #dc3545;
+    -fx-border-width: 2px;
+}
+
+.text-field.valid {
+    -fx-border-color: #28a745;
+    -fx-border-width: 2px;
+}
+
+/* Text Area */
+.text-area {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px;
+    -fx-font-size: 13px;
+}
+
+.text-area:focused {
+    -fx-border-color: #1173d4;
+    -fx-border-width: 2px;
+    -fx-background-color: white;
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-pref-height: 40px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #1173d4;
+    -fx-border-width: 2px;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 8px;
+}
+
+/* Help Text */
+.help-text {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 11px;
+}
+
+/* Error Text */
+.error-text {
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Separator */
+.form-separator {
+    -fx-padding: 10 0 10 0;
+}
+
+/* Buttons */
+.button-container {
+    -fx-padding: 10 0 0 0;
+}
+
+.btn-back {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1173d4;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.btn-back:hover {
+    -fx-background-color: #e7f2fc;
+    -fx-text-fill: #0d5fb3;
+}
+
+.btn-primary {
+    -fx-background-color: #1173d4;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px 24px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-min-width: 150px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #0d5fb3;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #0a4d8f;
+}
+
+.btn-primary:disabled {
+    -fx-background-color: #a8c7e5;
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+}
+
+.btn-secondary {
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #495057;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px 24px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-min-width: 120px;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #dee2e6;
+}
+
+.btn-secondary:pressed {
+    -fx-background-color: #ced4da;
+}
+
+/* Feedback Label */
+.feedback-label {
+    -fx-padding: 12px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+
+.feedback-label.success {
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #155724;
+    -fx-border-color: #c3e6cb;
+    -fx-border-width: 1px;
+}
+
+.feedback-label.error {
+    -fx-background-color: #f8d7da;
+    -fx-text-fill: #721c24;
+    -fx-border-color: #f5c6cb;
+    -fx-border-width: 1px;
+}
+
+.feedback-label.warning {
+    -fx-background-color: #fff3cd;
+    -fx-text-fill: #856404;
+    -fx-border-color: #ffeaa7;
+    -fx-border-width: 1px;
+}
+
+.feedback-label.info {
+    -fx-background-color: #d1ecf1;
+    -fx-text-fill: #0c5460;
+    -fx-border-color: #bee5eb;
+    -fx-border-width: 1px;
+}
+

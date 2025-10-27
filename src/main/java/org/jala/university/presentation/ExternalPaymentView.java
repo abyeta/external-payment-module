@@ -5,7 +5,8 @@ import org.jala.university.commons.presentation.View;
 
 @Getter
 public enum ExternalPaymentView {
-    MAIN("main-view.fxml");
+    MAIN("main-view.fxml"),
+    EXTERNAL_SERVICE_REGISTRATION("external-service-registration-view.fxml");
 
     private final View view;
 
