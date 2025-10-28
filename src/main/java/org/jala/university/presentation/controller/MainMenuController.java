@@ -40,19 +40,23 @@ public class MainMenuController extends BaseController {
 
     private String service;
     @FXML
-    public void initialize(){
+    public final void initialize() {
         insertFakeValues(enabledHBox);
         insertFakeValues(disabledHBox);
 
     }
 
-    public void insertFakeValues(VBox vBox){
+    public final void insertFakeValues(VBox vBox) {
         HBox firstLine = new HBox();
         HBox secondLine = new HBox();
 
-        firstLine.setSpacing(10);
-        secondLine.setSpacing(10);
-        for (int i = 0; i < 16; i++) {
+        final int spacing = 10;
+
+        firstLine.setSpacing(spacing);
+        secondLine.setSpacing(spacing);
+
+        final int quantity = 16;
+        for (int i = 0; i < quantity; i++) {
             VBox objectBox = getServiceBox();
 
             String serviceName = "service" + (i + 1);
@@ -67,7 +71,7 @@ public class MainMenuController extends BaseController {
             objectBox.getChildren().addAll(serviceNameBox, codeBox);
 
             VBox.setVgrow(serviceNameBox, Priority.ALWAYS);
-            if(i % 2 == 0){
+            if (i % 2 == 0) {
                 firstLine.getChildren().add(objectBox);
             } else {
                 secondLine.getChildren().add(objectBox);
@@ -81,18 +85,21 @@ public class MainMenuController extends BaseController {
         vBox.getChildren().addAll(firstLine, secondLine);
     }
 
-    public VBox getServiceBox(){
+    public final VBox getServiceBox() {
         VBox objectBox = new VBox();
         objectBox.setStyle("-fx-background-color: rgba(0,98,255,0.44)");
-        objectBox.setPrefWidth(150);
-        objectBox.setMinWidth(150);
-        objectBox.setPrefHeight(100);
-        objectBox.setMinHeight(100);
+
+        final int width = 150;
+        final int heigh = 100;
+        objectBox.setPrefWidth(width);
+        objectBox.setMinWidth(width);
+        objectBox.setPrefHeight(heigh);
+        objectBox.setMinHeight(heigh);
         return objectBox;
     }
 
-    public void edit(ActionEvent event) {
-        if (service == null){
+    public final void edit(ActionEvent event) {
+        if (service == null) {
             message.setText("selecciona un servicio");
             message.setVisible(true);
             return;
@@ -101,8 +108,8 @@ public class MainMenuController extends BaseController {
         message.setVisible(true);
     }
 
-    public void disable(ActionEvent event){
-        if (service == null){
+    public final void disable(ActionEvent event) {
+        if (service == null) {
             message.setText("selecciona un servicio");
             message.setVisible(true);
             return;
@@ -111,8 +118,8 @@ public class MainMenuController extends BaseController {
         message.setVisible(true);
     }
 
-    public void delete(ActionEvent event) {
-        if (service == null){
+    public final void delete(ActionEvent event) {
+        if (service == null) {
             message.setText("selecciona un servicio");
             message.setVisible(true);
             return;
@@ -121,13 +128,13 @@ public class MainMenuController extends BaseController {
         message.setVisible(true);
     }
 
-    public void addService(ActionEvent event) {
+    public final void addService(ActionEvent event) {
 
         message.setText("agregando servicio ");
         message.setVisible(true);
     }
 
-    public void enterServices(ActionEvent event) {
+    public final void enterServices(ActionEvent event) {
 
     }
 }
