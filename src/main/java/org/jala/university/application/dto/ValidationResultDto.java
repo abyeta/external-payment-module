@@ -12,22 +12,8 @@ import java.util.List;
 @Value
 @Builder
 public class ValidationResultDto {
-
-    /**
-     * Indicates whether the validation passed (true) or failed (false).
-     */
     boolean valid;
-
-    /**
-     * List of validation errors. Empty if validation passed.
-     */
     List<ValidationErrorDto> errors;
-
-    /**
-     * Checks if there are any validation errors.
-     *
-     * @return true if there are errors, false otherwise
-     */
     public boolean hasErrors() {
         return errors != null && !errors.isEmpty();
     }

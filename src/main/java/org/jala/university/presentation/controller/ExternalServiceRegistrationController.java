@@ -12,6 +12,7 @@ import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto
 import org.jala.university.application.dto.ValidationResultDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
 import org.jala.university.application.service.ExternalServiceRegistrationService;
+import org.jala.university.application.service.ExternalServiceRegistrationServiceImpl;
 import org.jala.university.application.validator.ServiceDataValidator;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
@@ -86,10 +87,6 @@ public class ExternalServiceRegistrationController extends BaseController {
     private ExternalServiceRegistrationService service;
     private ServiceDataValidator validator;
 
-    /**
-     * Initializes the controller. This method is called automatically by JavaFX
-     * after the FXML file has been loaded.
-     */
     @FXML
     public void initialize() {
         initializeServices();
@@ -99,9 +96,7 @@ public class ExternalServiceRegistrationController extends BaseController {
         disableSubmitButton();
     }
 
-    /**
-     * Initializes services and dependencies.
-     */
+
     private void initializeServices() {
         // Initialize validator
         validator = new ServiceDataValidator();
@@ -114,13 +109,10 @@ public class ExternalServiceRegistrationController extends BaseController {
 
         // Initialize mapper and service
         ExternalServiceMapper mapper = new ExternalServiceMapper();
-        service = new org.jala.university.application.service.ExternalServiceRegistrationServiceImpl(
+        service = new ExternalServiceRegistrationServiceImpl(
                 repository, mapper, validator);
     }
 
-    /**
-     * Sets up text formatters for fields that require specific formatting.
-     */
     private void setupTextFormatters() {
         // Provider name: max 100 characters
         providerNameField.setTextFormatter(createMaxLengthFormatter(MAX_PROVIDER_NAME_LENGTH));
@@ -132,12 +124,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         phoneNumberField.setTextFormatter(createNumericFormatter(PHONE_NUMBER_LENGTH));
     }
 
-    /**
-     * Creates a TextFormatter that allows only numeric input up to a specified length.
-     *
-     * @param maxLength the maximum length allowed
-     * @return the configured TextFormatter
-     */
     private TextFormatter<String> createNumericFormatter(int maxLength) {
         return new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
@@ -148,12 +134,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         });
     }
 
-    /**
-     * Creates a TextFormatter that limits text length.
-     *
-     * @param maxLength the maximum length allowed
-     * @return the configured TextFormatter
-     */
     private TextFormatter<String> createMaxLengthFormatter(int maxLength) {
         return new TextFormatter<>(change -> {
             if (change.getControlNewText().length() <= maxLength) {
@@ -163,9 +143,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         });
     }
 
-    /**
-     * Populates the country code ComboBox with common country codes.
-     */
     private void populateCountryCodeComboBox() {
         phoneCountryCodeComboBox.getItems().addAll(
                 "+591", // Bolivia
@@ -182,14 +159,11 @@ public class ExternalServiceRegistrationController extends BaseController {
         phoneCountryCodeComboBox.setValue("+591"); // Default
     }
 
-    /**
-     * Sets up real-time validators for all form fields.
-     */
     private void setupFieldValidators() {
         // Provider name validation
         providerNameField.textProperty().addListener((obs, oldVal, newVal) -> {
             validateProviderNameField();
-            updateSubmitButtonState();
+          //  updateSubmitButtonState();
         });
 
         // Account reference validation
@@ -217,11 +191,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         });
     }
 
-    /**
-     * Validates the provider name field and shows/hides error message.
-     *
-     * @return true if valid, false otherwise
-     */
     private boolean validateProviderNameField() {
         String value = providerNameField.getText();
         var error = validator.validateProviderName(value);
@@ -235,11 +204,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
-    /**
-     * Validates the account reference field and shows/hides error message.
-     *
-     * @return true if valid, false otherwise
-     */
     private boolean validateAccountReferenceField() {
         String value = accountReferenceField.getText();
         var error = validator.validateAccountReference(value);
@@ -253,11 +217,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
-    /**
-     * Validates the phone number field and shows/hides error message.
-     *
-     * @return true if valid, false otherwise
-     */
     private boolean validatePhoneNumberField() {
         String countryCode = phoneCountryCodeComboBox.getValue();
         String number = phoneNumberField.getText();
@@ -277,11 +236,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
-    /**
-     * Validates the email field and shows/hides error message.
-     *
-     * @return true if valid, false otherwise
-     */
     private boolean validateEmailField() {
         String value = emailField.getText();
         var error = validator.validateEmail(value);
@@ -295,11 +249,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
-    /**
-     * Checks if the entire form is valid.
-     *
-     * @return true if all fields are valid, false otherwise
-     */
     private boolean isFormValid() {
         return validateProviderNameField()
                 && validateAccountReferenceField()
@@ -307,32 +256,19 @@ public class ExternalServiceRegistrationController extends BaseController {
                 && validateEmailField();
     }
 
-    /**
-     * Updates the submit button enabled/disabled state based on form validity.
-     */
     private void updateSubmitButtonState() {
         submitButton.setDisable(!isFormValid());
     }
 
-    /**
-     * Disables the submit button initially.
-     */
     private void disableSubmitButton() {
         submitButton.setDisable(true);
     }
 
-    /**
-     * Handler for the Back to Main button.
-     * Navigates back to the main menu view.
-     */
     @FXML
     private void onBackToMain() {
         ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView());
     }
 
-    /**
-     * Handler for the Cancel button.
-     */
     @FXML
     private void onCancel() {
         // Check if form has changes (optional implementation)
@@ -341,9 +277,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView());
     }
 
-    /**
-     * Handler for the Submit button.
-     */
     @FXML
     private void onSubmit() {
         if (!isFormValid()) {
@@ -371,11 +304,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
-    /**
-     * Creates a request DTO from the current form values.
-     *
-     * @return the populated DTO
-     */
     private ExternalServiceRegistrationRequestDto createRequestDto() {
         return ExternalServiceRegistrationRequestDto.builder()
                 .providerName(providerNameField.getText().trim())
@@ -387,9 +315,7 @@ public class ExternalServiceRegistrationController extends BaseController {
                 .build();
     }
 
-    /**
-     * Clears all form fields.
-     */
+
     private void clearForm() {
         providerNameField.clear();
         accountReferenceField.clear();
@@ -403,9 +329,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         hideFeedback();
     }
 
-    /**
-     * Hides all error labels.
-     */
     private void hideAllErrors() {
         hideFieldError(providerNameField, providerNameError);
         hideFieldError(accountReferenceField, accountReferenceError);
@@ -413,13 +336,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         hideFieldError(emailField, emailError);
     }
 
-    /**
-     * Shows an error message for a specific field.
-     *
-     * @param field the text field with the error
-     * @param errorLabel the label to display the error message
-     * @param message the error message
-     */
     private void showFieldError(TextField field, Label errorLabel, String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
@@ -428,12 +344,7 @@ public class ExternalServiceRegistrationController extends BaseController {
         field.getStyleClass().add("error");
     }
 
-    /**
-     * Hides the error message for a specific field.
-     *
-     * @param field the text field
-     * @param errorLabel the error label to hide
-     */
+
     private void hideFieldError(TextField field, Label errorLabel) {
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
@@ -443,12 +354,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
-    /**
-     * Shows a feedback message to the user.
-     *
-     * @param message the message to display
-     * @param type the type of message (success, error, warning, info)
-     */
     private void showFeedback(String message, String type) {
         feedbackLabel.setText(message);
         feedbackLabel.getStyleClass().removeAll("success", "error", "warning", "info");
@@ -457,9 +362,6 @@ public class ExternalServiceRegistrationController extends BaseController {
         feedbackLabel.setManaged(true);
     }
 
-    /**
-     * Hides the feedback message.
-     */
     private void hideFeedback() {
         feedbackLabel.setVisible(false);
         feedbackLabel.setManaged(false);

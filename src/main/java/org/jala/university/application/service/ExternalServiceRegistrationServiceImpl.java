@@ -24,13 +24,6 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
     private final ExternalServiceMapper mapper;
     private final ServiceDataValidator validator;
 
-    /**
-     * Constructor with dependency injection.
-     *
-     * @param repository the external service repository
-     * @param mapper the external service mapper
-     * @param validator the service data validator
-     */
     public ExternalServiceRegistrationServiceImpl(ExternalServiceRepository repository,
                                                    ExternalServiceMapper mapper,
                                                    ServiceDataValidator validator) {

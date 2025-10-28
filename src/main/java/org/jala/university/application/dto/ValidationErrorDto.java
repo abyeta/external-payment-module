@@ -10,20 +10,8 @@ import lombok.Value;
 @Value
 @Builder
 public class ValidationErrorDto {
-
-    /**
-     * The name of the field that failed validation.
-     */
     String field;
-
-    /**
-     * Human-readable error message describing the validation failure.
-     */
     String message;
-
-    /**
-     * Error code for programmatic handling of errors.
-     */
     String errorCode;
 }
 
