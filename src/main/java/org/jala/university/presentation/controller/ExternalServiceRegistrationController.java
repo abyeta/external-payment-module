@@ -87,6 +87,12 @@ public class ExternalServiceRegistrationController extends BaseController {
     private ExternalServiceRegistrationService service;
     private ServiceDataValidator validator;
 
+    /**
+     * Initializes the controller after FXML injection is complete.
+     * Sets up services, text formatters, combo box values, field validators, and button states.
+     * This method is automatically called by JavaFX after the FXML file is loaded.
+     * Subclasses can override this method but should call super.initialize() first.
+     */
     @FXML
     public void initialize() {
         initializeServices();
@@ -297,6 +303,8 @@ public class ExternalServiceRegistrationController extends BaseController {
 
             showFeedback("Solicitud enviada exitosamente. ID: " + submitted.getId(), "success");
             clearForm();
+            showFeedback("Operación cancelada", "info");
+            ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView());
         } catch (IllegalArgumentException e) {
             showFeedback("Error al enviar: " + e.getMessage(), "error");
         } catch (Exception e) {

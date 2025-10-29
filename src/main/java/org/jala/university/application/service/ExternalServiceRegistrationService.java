@@ -24,3 +24,5 @@ public interface ExternalServiceRegistrationService {
     void delete(UUID id);
 }
 
+
+
