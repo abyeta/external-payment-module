@@ -95,7 +95,7 @@
             <Label fx:id="message" visible="false" alignment="TOP_CENTER"/>
         </VBox>
         <VBox alignment="CENTER" GridPane.rowIndex="1">
-            <Button alignment="CENTER" text="Agregar servicio" fx:id="addButton" onAction="#addService">
+            <Button alignment="CENTER" text="Agregar servicio" fx:id="addButton" onAction="#onRegisterService">
                 <font>
                     <Font size="18.0" />
                 </font></Button>

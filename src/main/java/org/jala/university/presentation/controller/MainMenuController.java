@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.jala.university.commons.presentation.BaseController;
+import org.jala.university.commons.presentation.ViewSwitcher;
+import org.jala.university.presentation.ExternalPaymentView;
 
 public class MainMenuController extends BaseController {
 
@@ -128,10 +130,9 @@ public class MainMenuController extends BaseController {
         message.setVisible(true);
     }
 
-    public final void addService(ActionEvent event) {
-
-        message.setText("agregando servicio ");
-        message.setVisible(true);
+    @FXML
+    private void onRegisterService() {
+        ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE_REGISTRATION.getView());
     }
 
     public final void enterServices(ActionEvent event) {
