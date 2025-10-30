@@ -31,46 +31,45 @@ import java.util.UUID;
 @AllArgsConstructor
 public final class ExternalService implements BaseEntity<UUID> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
 
-    @Column(name = "provider_name", nullable = false, length = ValidationConstants.PROVIDER_NAME_MAX_LENGTH)
-    private String providerName;
+  @Column(name = "provider_name", nullable = false, length = ValidationConstants.PROVIDER_NAME_MAX_LENGTH)
+  private String providerName;
 
-    @Column(name = "account_reference",
-            nullable = false,
-            length = ValidationConstants.ACCOUNT_REFERENCE_LENGTH,
-            unique = true)
-    private String accountReference;
+  @Column(name = "account_reference",
+      nullable = false,
+      length = ValidationConstants.ACCOUNT_REFERENCE_LENGTH,
+      unique = true)
+  private String accountReference;
 
-    @Column(name = "phone_country_code", nullable = false, length = ValidationConstants.PHONE_COUNTRY_CODE_MAX_LENGTH)
-    private String phoneCountryCode;
+  @Column(name = "phone_country_code", nullable = false, length = ValidationConstants.PHONE_COUNTRY_CODE_MAX_LENGTH)
+  private String phoneCountryCode;
 
-    @Column(name = "phone_number", nullable = false, length = ValidationConstants.PHONE_NUMBER_LENGTH)
-    private String phoneNumber;
+  @Column(name = "phone_number", nullable = false, length = ValidationConstants.PHONE_NUMBER_LENGTH)
+  private String phoneNumber;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+  @Column(name = "email", nullable = false)
+  private String email;
 
-    @Column(name = "contact_details", columnDefinition = "TEXT")
-    private String contactDetails;
+  @Column(name = "contact_details", columnDefinition = "TEXT")
+  private String contactDetails;
 
-    @Column(name = "enabled", nullable = false)
-    private boolean enabled = true;
+  @Column(name = "enabled", nullable = false)
+  private boolean enabled = true;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+  @LastModifiedDate
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
-    @Override
-    public UUID getId() {
-        return id;
-    }
+  @Override
+  public UUID getId() {
+    return id;
+  }
 }
-
