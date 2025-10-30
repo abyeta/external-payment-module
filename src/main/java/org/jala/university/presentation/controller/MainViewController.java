@@ -1,23 +1,31 @@
-package org.jala.university.presentation.controller;
-
-import java.io.IOException;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import org.jala.university.commons.presentation.BaseController;
-
-public class MainViewController extends BaseController {
-  @FXML
-  private void openExternalServiceList() throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ExternalServiceListView.fxml"));
-    Parent root = loader.load();
-
-    Stage stage = new Stage();
-    stage.setScene(new Scene(root));
-    stage.setTitle("External Services List");
-    stage.show();
-  }
-
-}
+//package org.jala.university.presentation.controller;
+//
+//import javafx.fxml.FXML;
+//import org.jala.university.commons.presentation.BaseController;
+//import org.jala.university.commons.presentation.ViewSwitcher;
+//import org.jala.university.presentation.ExternalPaymentView;
+//
+///**
+// * Controller for the main view of the External Payment Module.
+// * Provides navigation to different module features.
+// */
+//public class MainViewController extends BaseController {
+//
+//    /**
+//     * Navigates to the External Service Registration view.
+//     * This method is called when the user clicks the "Register Service" button.
+//     */
+//    @FXML
+//    private void onRegisterService() {
+//        ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE_REGISTRATION.getView());
+//    }
+//
+//    /**
+//     * Navigates back to the main view.
+//     * This method can be used by other views to return to the main menu.
+//     */
+//    @FXML
+//    private void onBackToMain() {
+//        ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView());
+//    }
+//}
