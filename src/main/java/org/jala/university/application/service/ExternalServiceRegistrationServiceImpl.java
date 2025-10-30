@@ -50,13 +50,10 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
             throw new IllegalArgumentException("Account reference already exists");
         }
 
-        // Map to entity with PENDING_APPROVAL status
         ExternalService entity = mapper.mapFromRequest(request);
 
-        // Save to repository
         ExternalService savedEntity = repository.save(entity);
 
-        // Map back to DTO and return
         return mapper.mapTo(savedEntity);
     }
 

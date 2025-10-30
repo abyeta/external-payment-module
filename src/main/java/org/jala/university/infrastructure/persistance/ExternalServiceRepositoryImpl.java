@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+
 import org.jala.university.commons.infrastructure.persistance.CrudRepository;
 import org.jala.university.domain.entity.ExternalService;
 import org.jala.university.domain.repository.ExternalServiceRepository;
@@ -68,6 +69,9 @@ public class ExternalServiceRepositoryImpl
         Long count = query.getSingleResult();
         return count > 0;
     }
+
+
+
 }
 
 

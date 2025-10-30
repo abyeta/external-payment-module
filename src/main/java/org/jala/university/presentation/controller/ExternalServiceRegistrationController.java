@@ -19,6 +19,7 @@ import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.domain.repository.ExternalServiceRepository;
 import org.jala.university.infrastructure.persistance.ExternalServiceRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
+import org.jala.university.presentation.store.ExternalServiceDataStore;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
@@ -300,6 +301,8 @@ public class ExternalServiceRegistrationController extends BaseController {
             }
 
             ExternalServiceDto submitted = service.submitRegistration(request);
+
+            ExternalServiceDataStore.get().add(submitted);
 
             showFeedback("Solicitud enviada exitosamente. ID: " + submitted.getId(), "success");
             clearForm();

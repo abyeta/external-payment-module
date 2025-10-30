@@ -27,6 +27,7 @@ public final class ExternalServiceMapper implements Mapper<ExternalService, Exte
                 .phoneNumber(externalService.getPhoneNumber())
                 .email(externalService.getEmail())
                 .contactDetails(externalService.getContactDetails())
+                .enabled(externalService.isEnabled())
                 .createdAt(externalService.getCreatedAt())
                 .updatedAt(externalService.getUpdatedAt())
                 .build();
@@ -46,6 +47,7 @@ public final class ExternalServiceMapper implements Mapper<ExternalService, Exte
                 .phoneNumber(externalServiceDto.getPhoneNumber())
                 .email(externalServiceDto.getEmail())
                 .contactDetails(externalServiceDto.getContactDetails())
+                .enabled(externalServiceDto.isEnabled())
                 .createdAt(externalServiceDto.getCreatedAt())
                 .updatedAt(externalServiceDto.getUpdatedAt())
                 .build();
@@ -64,6 +66,7 @@ public final class ExternalServiceMapper implements Mapper<ExternalService, Exte
                 .email(requestDto.getEmail())
                 .contactDetails(requestDto.getContactDetails())
                 .createdAt(LocalDateTime.now())
+                .enabled(true)
                 .build();
     }
 

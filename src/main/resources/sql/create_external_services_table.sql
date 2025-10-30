@@ -13,12 +13,9 @@ CREATE TABLE external_services (
     phone_number VARCHAR(10) NOT NULL,
     email VARCHAR(255) NOT NULL,
     contact_details TEXT,
-    status VARCHAR(20) NOT NULL,
+    enabled BOOLEAN NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     created_by VARCHAR(100),
     
 );
-
-
-

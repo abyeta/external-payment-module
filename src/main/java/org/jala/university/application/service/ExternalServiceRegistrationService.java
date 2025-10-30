@@ -22,6 +22,7 @@ public interface ExternalServiceRegistrationService {
     List<ExternalServiceDto> findAll();
 
     void delete(UUID id);
+
 }
 
 

@@ -57,6 +57,9 @@ public final class ExternalService implements BaseEntity<UUID> {
     @Column(name = "contact_details", columnDefinition = "TEXT")
     private String contactDetails;
 
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

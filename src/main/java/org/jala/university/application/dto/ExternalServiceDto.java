@@ -22,8 +22,15 @@ public class ExternalServiceDto {
     String phoneNumber;
     String email;
     String contactDetails;
+    boolean enabled;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+
+    public final boolean isEnabled() {
+      return enabled;
+    }
+
+
 
 }
 
