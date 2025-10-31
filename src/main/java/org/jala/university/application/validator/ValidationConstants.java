@@ -1,5 +1,6 @@
 package org.jala.university.application.validator;
 
+import java.security.PublicKey;
 import java.util.regex.Pattern;
 
 /**
@@ -14,6 +15,7 @@ public final class ValidationConstants {
     public static final String FIELD_PHONE_COUNTRY_CODE = "phoneCountryCode";
     public static final String FIELD_PHONE_NUMBER = "phoneNumber";
     public static final String FIELD_EMAIL = "email";
+    public static final String FIELD_FILES = "files";
 
     // Length constraints
     public static final int PROVIDER_NAME_MAX_LENGTH = 100;
@@ -21,6 +23,7 @@ public final class ValidationConstants {
     public static final int PHONE_NUMBER_LENGTH = 10;
     public static final int PHONE_COUNTRY_CODE_MAX_LENGTH = 5;
     public static final int CREATED_BY_MAX_LENGTH = 100;
+    public static final int MAX_FILE_SIZE = 10;
 
     // Regex patterns
     public static final Pattern PROVIDER_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9\\s]{1,100}$");
@@ -37,6 +40,7 @@ public final class ValidationConstants {
     public static final String ERROR_ALPHANUMERIC_ONLY = "ALPHANUMERIC_ONLY";
     public static final String ERROR_NUMERIC_ONLY = "NUMERIC_ONLY";
     public static final String ERROR_DUPLICATE = "DUPLICATE";
+    public static final String ERROR_FILE_SIZE_EXCEEDED = "FILE_SIZE_EXCEEDED";
 
     // Error messages
     public static final String MSG_PROVIDER_NAME_REQUIRED = "El nombre del proveedor es requerido";
@@ -61,6 +65,11 @@ public final class ValidationConstants {
 
     public static final String MSG_EMAIL_REQUIRED = "El correo electrónico es requerido";
     public static final String MSG_EMAIL_INVALID = "Formato de correo electrónico inválido";
+
+    public static final String MSG_FILES_REQUIRED = "Los archivos son requeridos";
+    public static final String MSG_FILE_SIZE_INVALID = "El archivo debe pesar máximo 10 MB: ";
+    public static final String MSG_FILE_FORMAT_INVALID = "El archivo solo puede ser formato PDF: ";
+
 
     /**
      * Private constructor to prevent instantiation.

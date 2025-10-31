@@ -26,6 +26,9 @@ public class RegistrationDocument implements BaseEntity<UUID> {
     @Column (name = "id", nullable = false, updatable = false)
     private UUID id;
 
+    @Column (name = "name", nullable = false)
+    private String fileName;
+
     @Lob
     @Column (name = "file", nullable = false, columnDefinition = "MEDIUMBLOB")
     private byte[] file;
