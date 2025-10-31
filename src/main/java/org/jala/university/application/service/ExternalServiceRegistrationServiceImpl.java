@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
  */
 public final class ExternalServiceRegistrationServiceImpl implements ExternalServiceRegistrationService {
 
-    private static final String DEFAULT_USER = "admin";
-
     private final ExternalServiceRepository repository;
     private final ExternalServiceMapper mapper;
     private final ServiceDataValidator validator;

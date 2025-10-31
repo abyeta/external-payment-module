@@ -2,13 +2,10 @@ package org.jala.university.presentation.controller;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -26,36 +23,14 @@ import org.jala.university.presentation.store.ExternalServiceDataStore;
 public class MainMenuController extends BaseController {
 
   @FXML
-  private GridPane root;
-  @FXML
-  private VBox rightMenu;
-  @FXML
-  private ScrollPane enabledServicesScroll;
-  @FXML
-  private ScrollPane disabledServicesScroll;
-  @FXML
-  private VBox enabledHBox;
-  @FXML
-  private VBox disabledHBox;
-  @FXML
-  private Button editButton;
-  @FXML
-  private Button disableButton;
-  @FXML
-  private Button deleteButton;
-  @FXML
-  private Button addButton;
-
+  private VBox servicesTableContainer;
   @FXML
   private Label message;
-
-  private ExternalServiceRegistrationService service;
-  private ExternalServiceDto selected;
 
   /**
    * Inicializa el menú principal:
    * construye el servicio, llena el store si está vacío
-   * y renderiza las tarjetas (nombre + código).
+   * y renderiza la tabla de servicios.
    */
   @FXML
   public final void initialize() {
@@ -67,45 +42,33 @@ public class MainMenuController extends BaseController {
     final ExternalServiceRepositoryImpl repo = new ExternalServiceRepositoryImpl(em);
     final ExternalServiceMapper mapper = new ExternalServiceMapper();
     final ServiceDataValidator validator = new ServiceDataValidator();
-    service = new ExternalServiceRegistrationServiceImpl(repo, mapper, validator);
+      ExternalServiceRegistrationService service = new ExternalServiceRegistrationServiceImpl(repo, mapper, validator);
 
     final ExternalServiceDataStore store = ExternalServiceDataStore.get();
     if (store.masterList().isEmpty()) {
       store.setAll(service.findAll());
     }
 
-
-    renderLists();
+    renderTable();
   }
 
-  public final void edit(ActionEvent event) {
-    if (selected == null) {
-      message.setText("selecciona un servicio");
-      message.setVisible(true);
-      return;
-    }
-    message.setText("editando " + selected.getProviderName() + " (" + selected.getAccountReference() + ")");
+  private void editService(final ExternalServiceDto dto) {
+    message.setText("✏ Editando: " + dto.getProviderName());
     message.setVisible(true);
+    message.setManaged(true);
   }
 
-  public final void disable(ActionEvent event) {
-    if (selected == null) {
-      message.setText("selecciona un servicio");
-      message.setVisible(true);
-      return;
-    }
-    message.setText("deshabilitando " + selected.getProviderName() + " (" + selected.getAccountReference() + ")");
+  private void toggleService(final ExternalServiceDto dto) {
+    final String action = dto.isEnabled() ? "deshabilitando" : "habilitando";
+    message.setText("⏸ Cambiando estado: " + action + " " + dto.getProviderName());
     message.setVisible(true);
+    message.setManaged(true);
   }
 
-  public final void delete(ActionEvent event) {
-    if (selected == null) {
-      message.setText("selecciona un servicio");
-      message.setVisible(true);
-      return;
-    }
-    message.setText("borrando " + selected.getProviderName() + " (" + selected.getAccountReference() + ")");
+  private void deleteService(final ExternalServiceDto dto) {
+    message.setText("🗑 Eliminando: " + dto.getProviderName());
     message.setVisible(true);
+    message.setManaged(true);
   }
 
   @FXML
@@ -113,78 +76,178 @@ public class MainMenuController extends BaseController {
     ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE_REGISTRATION.getView());
   }
 
-  public final void enterServices(ActionEvent event) {
-  }
-
-  private void renderLists() {
-    enabledHBox.getChildren().clear();
-    disabledHBox.getChildren().clear();
+  private void renderTable() {
+    servicesTableContainer.getChildren().clear();
 
     final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+    final java.util.List<ExternalServiceDto> services = store.masterList();
 
-    final var enabledList = store.masterList().stream()
-        .filter(ExternalServiceDto::isEnabled)
-        .toList();
-
-    final var disabledList = store.masterList().stream()
-        .filter(s -> !s.isEnabled())
-        .toList();
-
-    renderGroup(enabledHBox, enabledList);
-    renderGroup(disabledHBox, disabledList);
-  }
-
-
-  private void renderGroup(final VBox container, final java.util.List<ExternalServiceDto> list) {
-    final int gridSpacing = 10;
-    final int columnsPerRow = 4;
-
-    HBox row = new HBox(gridSpacing);
-    int count = 0;
-
-    for (ExternalServiceDto dto : list) {
-      final VBox card = createServiceCard(dto.getProviderName(), dto.getAccountReference(), dto);
-      row.getChildren().add(card);
-      count++;
-      if (count % columnsPerRow == 0) {
-        container.getChildren().add(row);
-        row = new HBox(gridSpacing);
-      }
+    if (services.isEmpty()) {
+      Label emptyLabel = new Label("No hay servicios registrados");
+      emptyLabel.setStyle("-fx-text-fill: #6c757d; -fx-font-size: 14px; -fx-padding: 40; -fx-alignment: center;");
+      servicesTableContainer.getChildren().add(emptyLabel);
+      return;
     }
-    if (!row.getChildren().isEmpty()) {
-      container.getChildren().add(row);
+
+    for (ExternalServiceDto dto : services) {
+      final HBox row = createTableRow(dto);
+      servicesTableContainer.getChildren().add(row);
     }
   }
 
-  private VBox createServiceCard(final String name, final String code, final ExternalServiceDto dto) {
-    final int cardWidth = 150;
-    final int cardHeight = 100;
+  private HBox createTableRow(final ExternalServiceDto dto) {
+    final int rowSpacing = 20;
+    final int rowPadding = 18;
+    final int codeWidth = 200;
+    final int statusWidth = 150;
+    final int actionsWidth = 150;
 
-    VBox card = new VBox();
-    card.setStyle("-fx-background-color: rgba(0,98,255,0.44); -fx-padding: 8;");
-    card.setPrefWidth(cardWidth);
-    card.setMinWidth(cardWidth);
-    card.setPrefHeight(cardHeight);
-    card.setMinHeight(cardHeight);
+    HBox row = new HBox(rowSpacing);
+    row.setAlignment(Pos.CENTER_LEFT);
+    row.setStyle(
+        "-fx-background-color: white; "
+        + "-fx-padding: " + rowPadding + " 20; "
+        + "-fx-border-color: #e0e0e0; "
+        + "-fx-border-width: 0 0 1 0;"
+    );
 
-    Label nameLbl = new Label(name);
-    nameLbl.setStyle("-fx-font-size: 18;");
-    HBox top = new HBox(nameLbl);
-    top.setAlignment(Pos.TOP_LEFT);
+    Label nameLabel = new Label(dto.getProviderName());
+    nameLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #1a1a1a; -fx-font-weight: normal;");
+    nameLabel.setMaxWidth(Double.MAX_VALUE);
+    HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
-    Label codeLbl = new Label(code);
-    codeLbl.setStyle("-fx-font-size: 12; -fx-opacity: 0.8;");
-    HBox bottom = new HBox(codeLbl);
-    bottom.setAlignment(Pos.BOTTOM_RIGHT);
+    Label codeLabel = new Label(dto.getAccountReference());
+    codeLabel.setStyle(
+        "-fx-font-size: 13px; "
+        + "-fx-text-fill: #6c757d; "
+        + "-fx-font-family: monospace; "
+        + "-fx-min-width: " + codeWidth + "px; "
+        + "-fx-pref-width: " + codeWidth + "px; "
+        + "-fx-max-width: " + codeWidth + "px;"
+    );
 
-    VBox.setVgrow(top, Priority.ALWAYS);
-    card.getChildren().addAll(top, bottom);
+    HBox statusBox = createStatusBadge(dto, statusWidth);
+    HBox actionsBox = createActionsBox(dto, actionsWidth);
 
-    card.setOnMouseClicked(e -> {
-      selected = dto;
-      message.setText("Seleccionado: " + name + " (" + code + ")");
-      message.setVisible(true);
-    });
-    return card;
+    row.getChildren().addAll(nameLabel, codeLabel, statusBox, actionsBox);
+    addRowHoverEffect(row);
+
+    return row;
+  }
+
+  private HBox createStatusBadge(final ExternalServiceDto dto, final int statusWidth) {
+    final int badgePadding = 6;
+    final int badgeFontSize = 12;
+    final int badgeRadius = 12;
+
+    HBox statusBox = new HBox();
+    statusBox.setAlignment(Pos.CENTER_LEFT);
+    statusBox.setMinWidth(statusWidth);
+    statusBox.setPrefWidth(statusWidth);
+    statusBox.setMaxWidth(statusWidth);
+
+    Label statusBadge = new Label(dto.isEnabled() ? "● Habilitado" : "● Deshabilitado");
+    if (dto.isEnabled()) {
+      statusBadge.setStyle(
+          "-fx-background-color: #d4edda; "
+          + "-fx-text-fill: #28a745; "
+          + "-fx-padding: " + badgePadding + " 12; "
+          + "-fx-background-radius: " + badgeRadius + "px; "
+          + "-fx-font-size: " + badgeFontSize + "px; "
+          + "-fx-font-weight: bold;"
+      );
+    } else {
+      statusBadge.setStyle(
+          "-fx-background-color: #e9ecef; "
+          + "-fx-text-fill: #6c757d; "
+          + "-fx-padding: " + badgePadding + " 12; "
+          + "-fx-background-radius: " + badgeRadius + "px; "
+          + "-fx-font-size: " + badgeFontSize + "px; "
+          + "-fx-font-weight: bold;"
+      );
+    }
+    statusBox.getChildren().add(statusBadge);
+    return statusBox;
+  }
+
+  private HBox createActionsBox(final ExternalServiceDto dto, final int actionsWidth) {
+    final int buttonSpacing = 8;
+    final int buttonSize = 32;
+
+    HBox actionsBox = new HBox(buttonSpacing);
+    actionsBox.setAlignment(Pos.CENTER);
+    actionsBox.setMinWidth(actionsWidth);
+    actionsBox.setPrefWidth(actionsWidth);
+    actionsBox.setMaxWidth(actionsWidth);
+
+    Button editBtn = createActionButton("✏", "#6c757d", buttonSize);
+    editBtn.setOnAction(e -> editService(dto));
+
+    Button toggleBtn = createActionButton("⏸", "#6c757d", buttonSize);
+    toggleBtn.setOnAction(e -> toggleService(dto));
+
+    Button deleteBtn = createActionButton("🗑", "#dc3545", buttonSize);
+    deleteBtn.setOnAction(e -> deleteService(dto));
+
+    actionsBox.getChildren().addAll(editBtn, toggleBtn, deleteBtn);
+    return actionsBox;
+  }
+
+  private Button createActionButton(final String icon, final String color, final int size) {
+    final int fontSize = 16;
+    final int padding = 5;
+    final int radius = 4;
+
+    Button btn = new Button(icon);
+    btn.setStyle(
+        "-fx-background-color: transparent; "
+        + "-fx-text-fill: " + color + "; "
+        + "-fx-font-size: " + fontSize + "px; "
+        + "-fx-cursor: hand; "
+        + "-fx-min-width: " + size + "px; "
+        + "-fx-min-height: " + size + "px; "
+        + "-fx-padding: " + padding + ";"
+    );
+
+    btn.setOnMouseEntered(e -> btn.setStyle(
+        "-fx-background-color: " + (color.equals("#dc3545") ? "#f8d7da" : "#f8f9fa") + "; "
+        + "-fx-text-fill: " + color + "; "
+        + "-fx-font-size: " + fontSize + "px; "
+        + "-fx-cursor: hand; "
+        + "-fx-min-width: " + size + "px; "
+        + "-fx-min-height: " + size + "px; "
+        + "-fx-padding: " + padding + "; "
+        + "-fx-background-radius: " + radius + "px;"
+    ));
+
+    btn.setOnMouseExited(e -> btn.setStyle(
+        "-fx-background-color: transparent; "
+        + "-fx-text-fill: " + color + "; "
+        + "-fx-font-size: " + fontSize + "px; "
+        + "-fx-cursor: hand; "
+        + "-fx-min-width: " + size + "px; "
+        + "-fx-min-height: " + size + "px; "
+        + "-fx-padding: " + padding + ";"
+    ));
+
+    return btn;
+  }
+
+  private void addRowHoverEffect(final HBox row) {
+    final int rowPadding = 18;
+    final int horizontalPadding = 20;
+    row.setOnMouseEntered(e -> row.setStyle(
+        "-fx-background-color: #f8f9fa; "
+        + "-fx-padding: " + rowPadding + " " + horizontalPadding + "; "
+        + "-fx-border-color: #e0e0e0; "
+        + "-fx-border-width: 0 0 1 0;"
+    ));
+
+    row.setOnMouseExited(e -> row.setStyle(
+        "-fx-background-color: white; "
+        + "-fx-padding: " + rowPadding + " " + horizontalPadding + "; "
+        + "-fx-border-color: #e0e0e0; "
+        + "-fx-border-width: 0 0 1 0;"
+    ));
   }
 }
