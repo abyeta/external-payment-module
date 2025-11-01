@@ -54,6 +54,7 @@ public final class ExternalService implements BaseEntity<UUID> {
   private String contactDetails;
 
   @Column(name = "enabled", nullable = false)
+  @lombok.Builder.Default
   private boolean enabled = true;
 
   @CreatedDate

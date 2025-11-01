@@ -14,6 +14,8 @@ import java.util.List;
  */
 public final class ServiceDataValidator {
 
+    private static final int BYTES_PER_KB = 1024;
+    private static final int BYTES_PER_MB = 1024;
 
     public ValidationErrorDto validateProviderName(String providerName) {
         if (providerName == null || providerName.trim().isEmpty()) {
@@ -135,11 +137,11 @@ public final class ServiceDataValidator {
         return null;
     }
 
-    public ValidationErrorDto validateFileSize(File file){
+    public ValidationErrorDto validateFileSize(File file) {
 
-        long fileSize = file.length() / (1024 * 1024);
+        long fileSize = file.length() / (BYTES_PER_KB * BYTES_PER_MB);
 
-        if(fileSize > ValidationConstants.MAX_FILE_SIZE) {
+        if (fileSize > ValidationConstants.MAX_FILE_SIZE) {
             return ValidationErrorDto.builder()
                     .field(ValidationConstants.FIELD_FILES)
                     .errorCode(ValidationConstants.ERROR_FILE_SIZE_EXCEEDED)
@@ -190,14 +192,14 @@ public final class ServiceDataValidator {
             errors.add(emailError);
         }
 
-        //Validate files integrity
+        // Validate files integrity
         ValidationErrorDto filesError = validateExistingFiles(requestDto.getFiles());
         if (filesError != null) {
             errors.add(filesError);
         } else {
             for (File file : requestDto.getFiles()) {
                 ValidationErrorDto fileError = validateFileSize(file);
-                if(fileError != null){
+                if (fileError != null) {
                     errors.add(fileError);
                 }
             }

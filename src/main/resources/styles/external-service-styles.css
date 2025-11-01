@@ -224,3 +224,136 @@
     -fx-border-width: 1px;
 }
 
+/* ========================================
+   Document Upload Section
+   ======================================== */
+
+.upload-section {
+    -fx-padding: 20 0 10 0;
+}
+
+.section-title {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.section-description {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 13px;
+}
+
+/* Drop Zone */
+.drop-zone {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.drop-zone:hover {
+    -fx-background-color: #e9ecef;
+    -fx-border-color: #1173d4;
+}
+
+.drop-zone-icon {
+    -fx-font-size: 48px;
+    -fx-text-fill: #6c757d;
+}
+
+.drop-zone-text {
+    -fx-text-fill: #495057;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.drop-zone-hint {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 12px;
+}
+
+.btn-select-files {
+    -fx-background-color: white;
+    -fx-text-fill: #1173d4;
+    -fx-border-color: #1173d4;
+    -fx-border-width: 2px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px 20px;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.btn-select-files:hover {
+    -fx-background-color: #1173d4;
+    -fx-text-fill: white;
+}
+
+/* Files List */
+.files-list-container {
+    -fx-padding: 10 0 0 0;
+}
+
+.files-list {
+    -fx-padding: 5px;
+}
+
+/* File Item */
+.file-item {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+}
+
+.file-item.success {
+    -fx-background-color: #d4edda;
+    -fx-border-color: #c3e6cb;
+}
+
+.file-item.error {
+    -fx-background-color: #f8d7da;
+    -fx-border-color: #f5c6cb;
+}
+
+.file-item-name {
+    -fx-text-fill: #212529;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.file-item-size {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 11px;
+}
+
+.file-item-status {
+    -fx-text-fill: #155724;
+    -fx-font-size: 11px;
+}
+
+.file-item-status.error {
+    -fx-text-fill: #721c24;
+}
+
+.btn-remove-file {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-min-width: 24px;
+    -fx-min-height: 24px;
+}
+
+.btn-remove-file:hover {
+    -fx-text-fill: #a71d2a;
+    -fx-background-color: #f8d7da;
+    -fx-background-radius: 4px;
+}
+
