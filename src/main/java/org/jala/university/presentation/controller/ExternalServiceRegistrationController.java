@@ -1,12 +1,7 @@
 package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto;
 import org.jala.university.application.dto.ValidationResultDto;
@@ -31,8 +26,13 @@ import jakarta.persistence.Persistence;
 public class ExternalServiceRegistrationController extends BaseController {
 
     private static final int MAX_PROVIDER_NAME_LENGTH = 100;
+    private static final int MAX_HOLDER_NAME_LENGTH = 150;
+    private static final int MIN_HOLDER_NAME_LENGTH = 3;
     private static final int ACCOUNT_REFERENCE_LENGTH = 10;
     private static final int PHONE_NUMBER_LENGTH = 10;
+    private static final int LANDLINE_LENGTH = 8;
+    private static final int MAX_HOLDER_ID_LENGTH = 20;
+    private static final int MIN_HOLDER_ID_LENGTH = 5;
 
     // FXML Components - Header
     @FXML
@@ -58,7 +58,22 @@ public class ExternalServiceRegistrationController extends BaseController {
     private TextField emailField;
 
     @FXML
+    private DatePicker expirationDatePicker;
+
+    @FXML
     private TextArea contactDetailsArea;
+
+    @FXML
+    private TextField holderNameField;
+
+    @FXML
+    private TextField holderIdField;
+
+    @FXML
+    private TextField holderEmailField;
+
+    @FXML
+    private TextField landlinePhoneField;
 
     // FXML Components - Labels
     @FXML
@@ -72,6 +87,18 @@ public class ExternalServiceRegistrationController extends BaseController {
 
     @FXML
     private Label emailError;
+
+    @FXML
+    private Label holderNameError;
+
+    @FXML
+    private Label holderIdError;
+
+    @FXML
+    private Label holderEmailError;
+
+    @FXML
+    private Label landlinePhoneError;
 
     // FXML Components - Buttons
     @FXML
@@ -129,6 +156,10 @@ public class ExternalServiceRegistrationController extends BaseController {
 
         // Phone number: only digits, max 10
         phoneNumberField.setTextFormatter(createNumericFormatter(PHONE_NUMBER_LENGTH));
+
+        holderNameField.setTextFormatter(createMaxLengthFormatter(MAX_HOLDER_NAME_LENGTH));
+        holderIdField.setTextFormatter(createNumericFormatter(MAX_HOLDER_ID_LENGTH));
+        landlinePhoneField.setTextFormatter(createNumericFormatter(LANDLINE_LENGTH));
     }
 
     private TextFormatter<String> createNumericFormatter(int maxLength) {
@@ -170,7 +201,7 @@ public class ExternalServiceRegistrationController extends BaseController {
         // Provider name validation
         providerNameField.textProperty().addListener((obs, oldVal, newVal) -> {
             validateProviderNameField();
-          //  updateSubmitButtonState();
+            //  updateSubmitButtonState();
         });
 
         // Account reference validation
@@ -194,6 +225,26 @@ public class ExternalServiceRegistrationController extends BaseController {
         // Country code validation
         phoneCountryCodeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             validatePhoneNumberField();
+            updateSubmitButtonState();
+        });
+
+        holderNameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateHolderNameField();
+            updateSubmitButtonState();
+        });
+
+        holderIdField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateHolderIdField();
+            updateSubmitButtonState();
+        });
+
+        holderEmailField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateHolderEmailField();
+            updateSubmitButtonState();
+        });
+
+        landlinePhoneField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateLandlinePhoneField();
             updateSubmitButtonState();
         });
     }
@@ -256,11 +307,70 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
+    private boolean validateHolderNameField() {
+        String value = holderNameField.getText();
+        if (value == null || value.trim().isEmpty()) {
+            showFieldError(holderNameField, holderNameError, "El nombre del titular es requerido");
+            return false;
+        } else if (value.trim().length() < MIN_HOLDER_NAME_LENGTH) {
+            showFieldError(holderNameField, holderNameError, "El nombre debe tener al menos 3 caracteres");
+            return false;
+        } else {
+            hideFieldError(holderNameField, holderNameError);
+            return true;
+        }
+    }
+
+    private boolean validateHolderIdField() {
+        String value = holderIdField.getText();
+        if (value == null || value.trim().isEmpty()) {
+            showFieldError(holderIdField, holderIdError, "El ID del titular es requerido");
+            return false;
+        } else if (value.trim().length() < MIN_HOLDER_ID_LENGTH) {
+            showFieldError(holderIdField, holderIdError, "El ID debe tener al menos 5 caracteres");
+            return false;
+        } else {
+            hideFieldError(holderIdField, holderIdError);
+            return true;
+        }
+    }
+
+    private boolean validateHolderEmailField() {
+        String value = holderEmailField.getText();
+        var error = validator.validateEmail(value);
+
+        if (error != null) {
+            showFieldError(holderEmailField, holderEmailError, error.getMessage());
+            return false;
+        } else {
+            hideFieldError(holderEmailField, holderEmailError);
+            return true;
+        }
+    }
+
+    private boolean validateLandlinePhoneField() {
+        String value = landlinePhoneField.getText();
+        if (value == null || value.trim().isEmpty()) {
+            showFieldError(landlinePhoneField, landlinePhoneError, "El teléfono fijo es requerido");
+            return false;
+        } else if (value.length() != LANDLINE_LENGTH) {
+            showFieldError(landlinePhoneField, landlinePhoneError, "Debe tener exactamente 8 dígitos");
+            return false;
+        } else {
+            hideFieldError(landlinePhoneField, landlinePhoneError);
+            return true;
+        }
+    }
+
     private boolean isFormValid() {
         return validateProviderNameField()
                 && validateAccountReferenceField()
                 && validatePhoneNumberField()
-                && validateEmailField();
+                && validateEmailField()
+                && validateHolderNameField()
+                && validateHolderIdField()
+                && validateHolderEmailField()
+                && validateLandlinePhoneField();
     }
 
     private void updateSubmitButtonState() {
@@ -333,6 +443,11 @@ public class ExternalServiceRegistrationController extends BaseController {
         phoneNumberField.clear();
         emailField.clear();
         contactDetailsArea.clear();
+        holderNameField.clear();
+        holderIdField.clear();
+        holderEmailField.clear();
+        landlinePhoneField.clear();
+        expirationDatePicker.setValue(null);
         phoneCountryCodeComboBox.setValue("+591");
 
         hideAllErrors();
@@ -345,6 +460,10 @@ public class ExternalServiceRegistrationController extends BaseController {
         hideFieldError(accountReferenceField, accountReferenceError);
         hideFieldError(phoneNumberField, phoneNumberError);
         hideFieldError(emailField, emailError);
+        hideFieldError(holderNameField, holderNameError);
+        hideFieldError(holderIdField, holderIdError);
+        hideFieldError(holderEmailField, holderEmailError);
+        hideFieldError(landlinePhoneField, landlinePhoneError);
     }
 
     private void showFieldError(TextField field, Label errorLabel, String message) {
