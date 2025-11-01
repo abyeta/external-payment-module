@@ -199,7 +199,7 @@ public final class ServiceDataValidator {
         } else {
             for (File file : requestDto.getFiles()) {
                 ValidationErrorDto fileError = validateFileSize(file);
-                if(fileError != null){
+                if (fileError != null) {
                     errors.add(fileError);
                 }
             }

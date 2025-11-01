@@ -1,6 +1,5 @@
 package org.jala.university.application.validator;
 
-import java.security.PublicKey;
 import java.util.regex.Pattern;
 
 /**

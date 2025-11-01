@@ -192,7 +192,12 @@
                     <Font name="System Bold" size="16.0" />
                 </font>
             </Label>
-            <Label fx:id="uploadDescriptionLabel" styleClass="section-description" text="Attach any relevant documents for the service registration." wrapText="true">
+            <Label fx:id="uploadDescriptionLabel" styleClass="section-description" text="Attach the following required documents:" wrapText="true">
+                <font>
+                    <Font size="13.0" />
+                </font>
+            </Label>
+            <Label styleClass="section-description" text="Commercial registry  -  Constitution document  -  Income fax return" wrapText="true">
                 <font>
                     <Font size="13.0" />
                 </font>

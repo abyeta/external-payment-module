@@ -17,7 +17,6 @@ import org.jala.university.commons.domain.entity.BaseEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -56,13 +55,4 @@ public class RegistrationDocument implements BaseEntity<UUID> {
     @JoinColumn(name = "service_id", nullable = false, updatable = false)
     private ExternalService externalService;
 
-    /**
-     * Gets the ID of the registration document.
-     *
-     * @return the document ID
-     */
-    @Override
-    public UUID getId() {
-        return this.id;
-    }
 }

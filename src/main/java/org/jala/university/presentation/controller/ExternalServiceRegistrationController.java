@@ -135,7 +135,7 @@ public class ExternalServiceRegistrationController extends BaseController {
     private List<File> selectedFiles = new ArrayList<>();
 
     /**
-     * Init services for controller
+     * Init services for controller.
      */
     @FXML
     public void initialize() {
