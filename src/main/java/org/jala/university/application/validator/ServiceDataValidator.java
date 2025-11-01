@@ -192,20 +192,21 @@ public final class ServiceDataValidator {
             errors.add(emailError);
         }
 
-        // Validate files integrity
+        //Validate files integrity
         ValidationErrorDto filesError = validateExistingFiles(requestDto.getFiles());
         if (filesError != null) {
             errors.add(filesError);
         } else {
             for (File file : requestDto.getFiles()) {
                 ValidationErrorDto fileError = validateFileSize(file);
-                if (fileError != null) {
+                if(fileError != null){
                     errors.add(fileError);
                 }
             }
         }
 
         // contactDetails is optional, no validation needed
+
         return ValidationResultDto.builder()
                 .valid(errors.isEmpty())
                 .errors(errors)

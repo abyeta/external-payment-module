@@ -17,6 +17,7 @@ import org.jala.university.commons.domain.entity.BaseEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ import java.util.UUID;
  * Entity representing a registration document for an external service.
  */
 @Entity
-@Table(name = "registration_document")
+@Table (name = "RegistrationDocument")
 @Data
 @Builder
 @NoArgsConstructor
