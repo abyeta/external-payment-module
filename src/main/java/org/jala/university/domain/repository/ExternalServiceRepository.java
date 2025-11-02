@@ -16,6 +16,12 @@ public interface ExternalServiceRepository extends Repository<ExternalService, U
     Optional<ExternalService> findByAccountReference(String accountReference);
 
     boolean existsByAccountReference(String accountReference);
+
+    boolean existsByProviderName(String providerName);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }
 
 

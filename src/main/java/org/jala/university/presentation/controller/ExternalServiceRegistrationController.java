@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto;
+import org.jala.university.application.dto.HolderDto;
 import org.jala.university.application.dto.ValidationResultDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
 import org.jala.university.application.service.ExternalServiceRegistrationService;
@@ -12,7 +13,9 @@ import org.jala.university.application.validator.ServiceDataValidator;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.domain.repository.ExternalServiceRepository;
+import org.jala.university.domain.repository.HolderRepository;
 import org.jala.university.infrastructure.persistance.ExternalServiceRepositoryImpl;
+import org.jala.university.infrastructure.persistance.HolderRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.store.ExternalServiceDataStore;
 
@@ -58,7 +61,7 @@ public class ExternalServiceRegistrationController extends BaseController {
     private TextField emailField;
 
     @FXML
-    private DatePicker expirationDatePicker;
+    private DatePicker contractExpirationDatePicker;
 
     @FXML
     private TextArea contactDetailsArea;
@@ -140,11 +143,11 @@ public class ExternalServiceRegistrationController extends BaseController {
                 .createEntityManagerFactory("external-payment-pu")
                 .createEntityManager();
         ExternalServiceRepository repository = new ExternalServiceRepositoryImpl(entityManager);
-
+        HolderRepository holderRepository = new HolderRepositoryImpl(entityManager);
         // Initialize mapper and service
         ExternalServiceMapper mapper = new ExternalServiceMapper();
         service = new ExternalServiceRegistrationServiceImpl(
-                repository, mapper, validator);
+                repository, mapper, validator, holderRepository);
     }
 
     private void setupTextFormatters() {
@@ -432,7 +435,14 @@ public class ExternalServiceRegistrationController extends BaseController {
                 .phoneCountryCode(phoneCountryCodeComboBox.getValue())
                 .phoneNumber(phoneNumberField.getText().trim())
                 .email(emailField.getText().trim())
+                .contractExpiration(contractExpirationDatePicker.getValue())
                 .contactDetails(contactDetailsArea.getText().trim())
+                .holder(HolderDto.builder()
+                        .name(holderNameField.getText().trim())
+                        .identificationNumber(holderIdField.getText().trim())
+                        .email(holderEmailField.getText().trim())
+                        .landlinePhone(landlinePhoneField.getText().trim())
+                        .build())
                 .build();
     }
 
@@ -447,7 +457,7 @@ public class ExternalServiceRegistrationController extends BaseController {
         holderIdField.clear();
         holderEmailField.clear();
         landlinePhoneField.clear();
-        expirationDatePicker.setValue(null);
+        contractExpirationDatePicker.setValue(null);
         phoneCountryCodeComboBox.setValue("+591");
 
         hideAllErrors();

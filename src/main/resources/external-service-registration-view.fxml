@@ -287,12 +287,13 @@
 
                     <!-- Expiration Date Field -->
                     <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <Label styleClass="field-label" text="Expiration Date (Optional)">
+                        <Label styleClass="field-label" text=" Contract Expiration Date (Optional)">
                             <font>
                                 <Font name="System Bold" size="13.0"/>
                             </font>
                         </Label>
-                        <DatePicker fx:id="expirationDatePicker" promptText="Select date" styleClass="date-picker"/>
+                        <DatePicker fx:id="contractExpirationDatePicker" promptText="Select date"
+                                    styleClass="date-picker"/>
                         <Label styleClass="help-text" text="Leave empty if the service is permanent.">
                             <font>
                                 <Font size="11.0"/>

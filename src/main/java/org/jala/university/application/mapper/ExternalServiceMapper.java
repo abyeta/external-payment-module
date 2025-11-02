@@ -4,6 +4,7 @@ import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto;
 import org.jala.university.commons.application.mapper.Mapper;
 import org.jala.university.domain.entity.ExternalService;
+import org.jala.university.domain.entity.Holder;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,7 @@ public final class ExternalServiceMapper implements Mapper<ExternalService, Exte
                 .phoneCountryCode(externalService.getPhoneCountryCode())
                 .phoneNumber(externalService.getPhoneNumber())
                 .email(externalService.getEmail())
+                .contractExpiration(externalService.getContractExpiration())
                 .contactDetails(externalService.getContactDetails())
                 .enabled(externalService.isEnabled())
                 .createdAt(externalService.getCreatedAt())
@@ -64,7 +66,14 @@ public final class ExternalServiceMapper implements Mapper<ExternalService, Exte
                 .phoneCountryCode(requestDto.getPhoneCountryCode())
                 .phoneNumber(requestDto.getPhoneNumber())
                 .email(requestDto.getEmail())
+                .contractExpiration(requestDto.getContractExpiration())
                 .contactDetails(requestDto.getContactDetails())
+                .holder(Holder.builder()
+                        .name(requestDto.getHolder().getName())
+                        .identificationNumber(requestDto.getHolder().getIdentificationNumber())
+                        .email(requestDto.getHolder().getEmail())
+                        .landlinePhone(requestDto.getHolder().getLandlinePhone())
+                        .build())
                 .createdAt(LocalDateTime.now())
                 .enabled(true)
                 .build();

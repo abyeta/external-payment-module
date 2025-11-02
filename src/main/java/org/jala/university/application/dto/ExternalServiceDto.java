@@ -3,6 +3,7 @@ package org.jala.university.application.dto;
 import lombok.Builder;
 import lombok.Value;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public class ExternalServiceDto {
     String phoneCountryCode;
     String phoneNumber;
     String email;
+    LocalDate contractExpiration;
     String contactDetails;
     boolean enabled;
     LocalDateTime createdAt;
