@@ -200,12 +200,11 @@ public class ExternalServiceRegistrationController extends BaseController {
         // Initialize mapper and service
         ExternalServiceMapper mapper = new ExternalServiceMapper();
         service = new ExternalServiceRegistrationServiceImpl(
-                repository, mapper, validator);
+                repository, mapper, validator, holderRepository);
 
         RegistrationDocumentMapper documentMapper = new RegistrationDocumentMapper();
         documentService = new RegistrationDocumentServiceImpl(
                 documentRepository, repository, documentMapper);
-                repository, mapper, validator, holderRepository);
     }
 
     private void setupTextFormatters() {
@@ -472,40 +471,25 @@ public class ExternalServiceRegistrationController extends BaseController {
                 return;
             }
 
-            // Begin transaction
-            entityManager.getTransaction().begin();
+            // Submit the service registration (transaction handled by repository/service layer)
+            ExternalServiceDto submitted = service.submitRegistration(request);
 
-            try {
-                // Submit the service registration
-                ExternalServiceDto submitted = service.submitRegistration(request);
-
-                // Save the uploaded documents if any
-                if (!selectedFiles.isEmpty()) {
-                    saveDocuments(submitted.getId());
-                }
-
-                // Commit transaction
-                entityManager.getTransaction().commit();
-
-                ExternalServiceDataStore.get().add(submitted);
-
-                showFeedback("Servicio registrado exitosamente. ID: " + submitted.getId(), "success");
-                clearForm();
-
-                // Navigate back after a brief delay
-                javafx.animation.PauseTransition pause =
-                        new javafx.animation.PauseTransition(
-                                javafx.util.Duration.seconds(NAVIGATION_DELAY_SECONDS));
-                pause.setOnFinished(e -> ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView()));
-                pause.play();
-
-            } catch (Exception e) {
-                // Rollback transaction on error
-                if (entityManager.getTransaction().isActive()) {
-                    entityManager.getTransaction().rollback();
-                }
-                throw e;
+            // Save the uploaded documents if any
+            if (!selectedFiles.isEmpty()) {
+                saveDocuments(submitted.getId());
             }
+
+            ExternalServiceDataStore.get().add(submitted);
+
+            showFeedback("Servicio registrado exitosamente. ID: " + submitted.getId(), "success");
+            clearForm();
+
+            // Navigate back after a brief delay
+            javafx.animation.PauseTransition pause =
+                    new javafx.animation.PauseTransition(
+                            javafx.util.Duration.seconds(NAVIGATION_DELAY_SECONDS));
+            pause.setOnFinished(e -> ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView()));
+            pause.play();
 
         } catch (IllegalArgumentException e) {
             showFeedback("Error al enviar: " + e.getMessage(), "error");
@@ -565,6 +549,7 @@ public class ExternalServiceRegistrationController extends BaseController {
                         .email(holderEmailField.getText().trim())
                         .landlinePhone(landlinePhoneField.getText().trim())
                         .build())
+                .files(selectedFiles)
                 .build();
     }
 
