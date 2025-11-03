@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -72,8 +73,12 @@ public final class ExternalService implements BaseEntity<UUID> {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToMany (mappedBy = "externalService")
+    private List<RegistrationDocument> documents;
+
     @Override
     public UUID getId() {
         return id;
     }
 }
+

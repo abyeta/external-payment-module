@@ -30,6 +30,38 @@ public class ExternalServiceRepositoryImpl
     }
 
     /**
+     * Saves an external service entity and flushes to ensure the ID is generated.
+     *
+     * @param entity the external service entity to save
+     * @return the saved entity with the generated ID
+     */
+    public ExternalService saveAndFlush(ExternalService entity) {
+        EntityManager em = getEntityManager();
+        jakarta.persistence.EntityTransaction tx = em.getTransaction();
+        boolean startedHere = false;
+        if (!tx.isActive()) {
+            tx.begin();
+            startedHere = true;
+        }
+
+        ExternalService managed;
+        if (entity.getId() == null) {
+            em.persist(entity);
+            managed = entity;
+        } else {
+            managed = em.merge(entity);
+        }
+
+        em.flush();
+
+        if (startedHere) {
+            tx.commit();
+        }
+
+        return managed;
+    }
+
+    /**
      * Finds an external service by its account reference number.
      * Returns Optional to handle cases where the service is not found.
      *

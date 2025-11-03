@@ -2,25 +2,50 @@ package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto;
 import org.jala.university.application.dto.HolderDto;
+import org.jala.university.application.dto.RegistrationDocumentDto;
 import org.jala.university.application.dto.ValidationResultDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
+import org.jala.university.application.mapper.RegistrationDocumentMapper;
 import org.jala.university.application.service.ExternalServiceRegistrationService;
 import org.jala.university.application.service.ExternalServiceRegistrationServiceImpl;
+import org.jala.university.application.service.RegistrationDocumentService;
+import org.jala.university.application.service.RegistrationDocumentServiceImpl;
 import org.jala.university.application.validator.ServiceDataValidator;
+import org.jala.university.application.validator.ValidationConstants;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.domain.repository.ExternalServiceRepository;
 import org.jala.university.domain.repository.HolderRepository;
+import org.jala.university.domain.repository.RegistrationDocumentRepository;
 import org.jala.university.infrastructure.persistance.ExternalServiceRepositoryImpl;
 import org.jala.university.infrastructure.persistance.HolderRepositoryImpl;
+import org.jala.university.infrastructure.persistance.RegistrationDocumentRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.store.ExternalServiceDataStore;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for the External Service Registration view.
@@ -33,6 +58,12 @@ public class ExternalServiceRegistrationController extends BaseController {
     private static final int MIN_HOLDER_NAME_LENGTH = 3;
     private static final int ACCOUNT_REFERENCE_LENGTH = 10;
     private static final int PHONE_NUMBER_LENGTH = 10;
+    private static final int BYTES_PER_KB = 1024;
+    private static final int BYTES_PER_MB = 1024;
+    private static final double NAVIGATION_DELAY_SECONDS = 1.5;
+    private static final int FILE_ITEM_SPACING = 4;
+    private static final int FILE_ITEM_PADDING = 12;
+    private static final int FILE_ITEM_HBOX_SPACING = 10;
     private static final int LANDLINE_LENGTH = 8;
     private static final int MAX_HOLDER_ID_LENGTH = 20;
     private static final int MIN_HOLDER_ID_LENGTH = 5;
@@ -114,15 +145,33 @@ public class ExternalServiceRegistrationController extends BaseController {
     @FXML
     private Label feedbackLabel;
 
+    // FXML Components - File Upload
+    @FXML
+    private VBox dropZone;
+
+    @FXML
+    private VBox filesListContainer;
+
+    @FXML
+    private VBox filesListBox;
+
+    @FXML
+    private Label uploadError;
+
+    @FXML
+    private Button selectFilesButton;
+
     // Services and dependencies
     private ExternalServiceRegistrationService service;
+    private RegistrationDocumentService documentService;
     private ServiceDataValidator validator;
+    private EntityManager entityManager;
+
+    // File management
+    private List<File> selectedFiles = new ArrayList<>();
 
     /**
-     * Initializes the controller after FXML injection is complete.
-     * Sets up services, text formatters, combo box values, field validators, and button states.
-     * This method is automatically called by JavaFX after the FXML file is loaded.
-     * Subclasses can override this method but should call super.initialize() first.
+     * Init services for controller.
      */
     @FXML
     public void initialize() {
@@ -139,14 +188,23 @@ public class ExternalServiceRegistrationController extends BaseController {
         validator = new ServiceDataValidator();
 
         // Initialize EntityManager and repository
-        EntityManager entityManager = Persistence
+        entityManager = Persistence
                 .createEntityManagerFactory("external-payment-pu")
                 .createEntityManager();
         ExternalServiceRepository repository = new ExternalServiceRepositoryImpl(entityManager);
+        RegistrationDocumentRepository documentRepository =
+                new RegistrationDocumentRepositoryImpl(entityManager);
+
+        // Initialize mappers and services
         HolderRepository holderRepository = new HolderRepositoryImpl(entityManager);
         // Initialize mapper and service
         ExternalServiceMapper mapper = new ExternalServiceMapper();
         service = new ExternalServiceRegistrationServiceImpl(
+                repository, mapper, validator);
+
+        RegistrationDocumentMapper documentMapper = new RegistrationDocumentMapper();
+        documentService = new RegistrationDocumentServiceImpl(
+                documentRepository, repository, documentMapper);
                 repository, mapper, validator, holderRepository);
     }
 
@@ -410,21 +468,85 @@ public class ExternalServiceRegistrationController extends BaseController {
 
             if (!validationResult.isValid()) {
                 showFeedback("El formulario contiene errores de validación", "error");
+                displayValidationErrors(validationResult);
                 return;
             }
 
-            ExternalServiceDto submitted = service.submitRegistration(request);
+            // Begin transaction
+            entityManager.getTransaction().begin();
 
-            ExternalServiceDataStore.get().add(submitted);
+            try {
+                // Submit the service registration
+                ExternalServiceDto submitted = service.submitRegistration(request);
 
-            showFeedback("Solicitud enviada exitosamente. ID: " + submitted.getId(), "success");
-            clearForm();
-            showFeedback("Operación cancelada", "info");
-            ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView());
+                // Save the uploaded documents if any
+                if (!selectedFiles.isEmpty()) {
+                    saveDocuments(submitted.getId());
+                }
+
+                // Commit transaction
+                entityManager.getTransaction().commit();
+
+                ExternalServiceDataStore.get().add(submitted);
+
+                showFeedback("Servicio registrado exitosamente. ID: " + submitted.getId(), "success");
+                clearForm();
+
+                // Navigate back after a brief delay
+                javafx.animation.PauseTransition pause =
+                        new javafx.animation.PauseTransition(
+                                javafx.util.Duration.seconds(NAVIGATION_DELAY_SECONDS));
+                pause.setOnFinished(e -> ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView()));
+                pause.play();
+
+            } catch (Exception e) {
+                // Rollback transaction on error
+                if (entityManager.getTransaction().isActive()) {
+                    entityManager.getTransaction().rollback();
+                }
+                throw e;
+            }
+
         } catch (IllegalArgumentException e) {
             showFeedback("Error al enviar: " + e.getMessage(), "error");
         } catch (Exception e) {
             showFeedback("Error inesperado: " + e.getMessage(), "error");
+            e.printStackTrace();
+        }
+    }
+
+    private void saveDocuments(java.util.UUID serviceId) {
+        try {
+            List<RegistrationDocumentDto> documentDtos = new ArrayList<>();
+
+            for (File file : selectedFiles) {
+                RegistrationDocumentDto dto = RegistrationDocumentDto.builder()
+                        .fileName(file.getName())
+                        .file(file)
+                        .createdAt(java.time.LocalDateTime.now())
+                        .build();
+                documentDtos.add(dto);
+            }
+
+            documentService.saveRegistrationDocuments(serviceId, documentDtos);
+        } catch (Exception e) {
+            showFeedback("Advertencia: El servicio se guardó pero hubo un error al guardar "
+                    + "los documentos: " + e.getMessage(), "warning");
+            e.printStackTrace();
+        }
+    }
+
+    private void displayValidationErrors(ValidationResultDto result) {
+        if (result.getErrors() != null && !result.getErrors().isEmpty()) {
+            StringBuilder errorMessages = new StringBuilder();
+            result.getErrors().forEach(error -> {
+                errorMessages.append(error.getMessage()).append("\n");
+
+                // Show error in specific field if applicable
+                if ("files".equals(error.getField())) {
+                    showUploadError(error.getMessage());
+                }
+            });
         }
     }
 
@@ -446,6 +568,170 @@ public class ExternalServiceRegistrationController extends BaseController {
                 .build();
     }
 
+    // ==================== FILE UPLOAD METHODS ====================
+
+    @FXML
+    private void onSelectFiles() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar Documentos");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Archivos PDF", "*.pdf")
+        );
+
+        List<File> files = fileChooser.showOpenMultipleDialog(selectFilesButton.getScene().getWindow());
+        if (files != null && !files.isEmpty()) {
+            addFiles(files);
+        }
+    }
+
+    @FXML
+    private void onDragOver(DragEvent event) {
+        if (event.getGestureSource() != dropZone && event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY);
+        }
+        event.consume();
+    }
+
+    @FXML
+    private void onDragDropped(DragEvent event) {
+        Dragboard dragboard = event.getDragboard();
+        boolean success = false;
+
+        if (dragboard.hasFiles()) {
+            List<File> files = dragboard.getFiles();
+            addFiles(files);
+            success = true;
+        }
+
+        event.setDropCompleted(success);
+        event.consume();
+    }
+
+    private void addFiles(List<File> files) {
+        hideUploadError();
+
+        for (File file : files) {
+            // Check if file is already added
+            if (isFileAlreadyAdded(file)) {
+                showUploadError("El archivo '" + file.getName() + "' ya fue agregado.");
+                continue;
+            }
+
+            // Validate file type
+            if (!isValidFileType(file)) {
+                showUploadError("Tipo de archivo inválido: " + file.getName()
+                        + ". Solo se permiten archivos PDF.");
+                continue;
+            }
+
+            // Validate file size
+            if (!isValidFileSize(file)) {
+                showUploadError("El archivo '" + file.getName()
+                        + "' excede el tamaño máximo de 10 MB.");
+                continue;
+            }
+
+            // Add file to list
+            selectedFiles.add(file);
+        }
+
+        // Update UI
+        updateFilesListDisplay();
+        updateSubmitButtonState();
+    }
+
+    private boolean isFileAlreadyAdded(File file) {
+        return selectedFiles.stream()
+                .anyMatch(f -> f.getAbsolutePath().equals(file.getAbsolutePath()));
+    }
+
+
+    private boolean isValidFileType(File file) {
+        String fileName = file.getName().toLowerCase();
+        return fileName.endsWith(".pdf");
+    }
+
+    private boolean isValidFileSize(File file) {
+        long fileSizeInMB = file.length() / (BYTES_PER_KB * BYTES_PER_MB);
+        return fileSizeInMB <= ValidationConstants.MAX_FILE_SIZE;
+    }
+
+    private void updateFilesListDisplay() {
+        filesListBox.getChildren().clear();
+
+        if (selectedFiles.isEmpty()) {
+            filesListContainer.setVisible(false);
+            filesListContainer.setManaged(false);
+        } else {
+            filesListContainer.setVisible(true);
+            filesListContainer.setManaged(true);
+
+            for (File file : selectedFiles) {
+                HBox fileItem = createFileItemNode(file);
+                filesListBox.getChildren().add(fileItem);
+            }
+        }
+    }
+
+    private HBox createFileItemNode(File file) {
+        HBox container = new HBox(FILE_ITEM_HBOX_SPACING);
+        container.setAlignment(Pos.CENTER_LEFT);
+        container.getStyleClass().add("file-item");
+        container.getStyleClass().add("success");
+        container.setPadding(new Insets(FILE_ITEM_PADDING));
+
+        // File icon
+        Label iconLabel = new Label("📄");
+        iconLabel.setStyle("-fx-font-size: 24px;");
+
+        // File info VBox
+        VBox fileInfo = new VBox(FILE_ITEM_SPACING);
+        HBox.setHgrow(fileInfo, Priority.ALWAYS);
+
+        Label fileName = new Label(file.getName());
+        fileName.getStyleClass().add("file-item-name");
+
+        long fileSizeInKB = file.length() / BYTES_PER_KB;
+        String sizeText = fileSizeInKB < BYTES_PER_KB
+                ? String.format("%d KB", fileSizeInKB)
+                : String.format("%.2f MB", fileSizeInKB / (double) BYTES_PER_MB);
+
+        Label fileSize = new Label(sizeText);
+        fileSize.getStyleClass().add("file-item-size");
+
+        Label status = new Label("✓ Uploaded");
+        status.getStyleClass().add("file-item-status");
+
+        fileInfo.getChildren().addAll(fileName, fileSize, status);
+
+        // Remove button
+        Button removeButton = new Button("✕");
+        removeButton.getStyleClass().add("btn-remove-file");
+        removeButton.setOnAction(e -> removeFile(file));
+
+        container.getChildren().addAll(iconLabel, fileInfo, removeButton);
+
+        return container;
+    }
+
+    private void removeFile(File file) {
+        selectedFiles.remove(file);
+        updateFilesListDisplay();
+        updateSubmitButtonState();
+        hideUploadError();
+    }
+
+    private void showUploadError(String message) {
+        uploadError.setText(message);
+        uploadError.setVisible(true);
+        uploadError.setManaged(true);
+    }
+
+    private void hideUploadError() {
+        uploadError.setVisible(false);
+        uploadError.setManaged(false);
+    }
+
 
     private void clearForm() {
         providerNameField.clear();
@@ -459,6 +745,11 @@ public class ExternalServiceRegistrationController extends BaseController {
         landlinePhoneField.clear();
         contractExpirationDatePicker.setValue(null);
         phoneCountryCodeComboBox.setValue("+591");
+
+        // Clear file selection
+        selectedFiles.clear();
+        updateFilesListDisplay();
+        hideUploadError();
 
         hideAllErrors();
         disableSubmitButton();

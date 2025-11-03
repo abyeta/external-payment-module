@@ -4,6 +4,7 @@ import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto
 import org.jala.university.application.dto.ValidationErrorDto;
 import org.jala.university.application.dto.ValidationResultDto;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
  */
 public final class ServiceDataValidator {
 
+    private static final int BYTES_PER_KB = 1024;
+    private static final int BYTES_PER_MB = 1024;
 
     public ValidationErrorDto validateProviderName(String providerName) {
         if (providerName == null || providerName.trim().isEmpty()) {
@@ -122,6 +125,33 @@ public final class ServiceDataValidator {
         return null;
     }
 
+    public ValidationErrorDto validateExistingFiles(List<File> files) {
+        if (files == null || files.isEmpty()) {
+            return ValidationErrorDto.builder()
+                    .field(ValidationConstants.FIELD_FILES)
+                    .errorCode(ValidationConstants.ERROR_REQUIRED)
+                    .message(ValidationConstants.MSG_FILES_REQUIRED)
+                    .build();
+        }
+
+        return null;
+    }
+
+    public ValidationErrorDto validateFileSize(File file) {
+
+        long fileSize = file.length() / (BYTES_PER_KB * BYTES_PER_MB);
+
+        if (fileSize > ValidationConstants.MAX_FILE_SIZE) {
+            return ValidationErrorDto.builder()
+                    .field(ValidationConstants.FIELD_FILES)
+                    .errorCode(ValidationConstants.ERROR_FILE_SIZE_EXCEEDED)
+                    .message(ValidationConstants.MSG_FILE_SIZE_INVALID + file.getName())
+                    .build();
+        }
+
+        return null;
+    }
+
     public ValidationResultDto validateAll(ExternalServiceRegistrationRequestDto requestDto) {
         List<ValidationErrorDto> errors = new ArrayList<>();
 
@@ -160,6 +190,19 @@ public final class ServiceDataValidator {
         ValidationErrorDto emailError = validateEmail(requestDto.getEmail());
         if (emailError != null) {
             errors.add(emailError);
+        }
+
+        //Validate files integrity
+        ValidationErrorDto filesError = validateExistingFiles(requestDto.getFiles());
+        if (filesError != null) {
+            errors.add(filesError);
+        } else {
+            for (File file : requestDto.getFiles()) {
+                ValidationErrorDto fileError = validateFileSize(file);
+                if (fileError != null) {
+                    errors.add(fileError);
+                }
+            }
         }
 
         // contactDetails is optional, no validation needed

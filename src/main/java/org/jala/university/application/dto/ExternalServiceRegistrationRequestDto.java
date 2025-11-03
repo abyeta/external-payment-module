@@ -5,6 +5,9 @@ import lombok.Value;
 
 import java.time.LocalDate;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * DTO representing a request to register a new external service.
  * This is used to transfer data from the presentation layer to the service layer.
@@ -21,6 +24,7 @@ public class ExternalServiceRegistrationRequestDto {
     LocalDate contractExpiration;
     String contactDetails;
     HolderDto holder;
+    List<File> files;
 }
 
 
