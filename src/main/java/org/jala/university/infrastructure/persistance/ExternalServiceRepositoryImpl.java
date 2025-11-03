@@ -102,9 +102,76 @@ public class ExternalServiceRepositoryImpl
         return count > 0;
     }
 
+    /**
+     * Checks if an external service with the specified provider name already exists in the database.
+     * This method is used to ensure uniqueness of provider names among external services.
+     *
+     * @param providerName the provider name to check for existence
+     * @return {@code true} if an external service with the given provider name exists, {@code false} otherwise
+     * @throws jakarta.persistence.PersistenceException if there is a problem with the database operation
+     */
+    @Transactional
+    @Override
+    public boolean existsByProviderName(String providerName) {
+        String jpql = "SELECT COUNT(e) FROM ExternalService e WHERE e.providerName = :providerName";
 
+        TypedQuery<Long> query = getEntityManager()
+                .createQuery(jpql, Long.class);
+
+        query.setParameter("providerName", providerName);
+
+        Long count = query.getSingleResult();
+        return count > 0;
+    }
+
+    /**
+     * Determines if an external service with the specified email address is already registered.
+     * This method provides efficient existence check to prevent duplicate email assignments
+     * across different external service providers in the system.
+     *
+     * @param email the email address to check, must not be {@code null} or empty
+     * @return {@code true} if the email is already associated with an external service,
+     * {@code false} if the email is available
+     * @throws jakarta.persistence.PersistenceException if there are issues with the underlying persistence operations
+     * @throws IllegalArgumentException                 if the email parameter is {@code null} or empty
+     */
+    @Transactional
+    @Override
+    public boolean existsByEmail(String email) {
+        String jpql = "SELECT COUNT(e) FROM ExternalService e WHERE e.email = :email";
+
+        TypedQuery<Long> query = getEntityManager()
+                .createQuery(jpql, Long.class);
+
+        query.setParameter("email", email);
+
+        Long count = query.getSingleResult();
+        return count > 0;
+    }
+
+    /**
+     * Checks for the existence of an external service with the given phone number.
+     * This validation ensures phone number uniqueness among external services and is important
+     * for maintaining accurate contact information and preventing duplicates.
+     *
+     * @param phoneNumber the phone number to verify (including country code), must not be {@code null} or empty
+     * @return {@code true} if the phone number is already in use by another external service,
+     * {@code false} if the phone number is available
+     * @throws jakarta.persistence.PersistenceException if database access operations fail
+     * @throws IllegalArgumentException                 if the phoneNumber parameter is {@code null} or empty
+     */
+    @Transactional
+    @Override
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        String jpql = "SELECT COUNT(e) FROM ExternalService e WHERE e.phoneNumber = :phoneNumber";
+
+        TypedQuery<Long> query = getEntityManager()
+                .createQuery(jpql, Long.class);
+
+        query.setParameter("phoneNumber", phoneNumber);
+
+        Long count = query.getSingleResult();
+        return count > 0;
+    }
 
 }
-
-
-

@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.DatePicker?>
 <VBox fx:id="rootContainer" maxWidth="900.0" minHeight="600.0" minWidth="800.0" prefHeight="700.0" prefWidth="900.0" styleClass="root-container" stylesheets="@styles/external-service-styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.ExternalServiceRegistrationController">
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
     <VBox spacing="20.0">
@@ -185,6 +186,136 @@
         <!-- Separator -->
         <Separator styleClass="form-separator" />
 
+        <!-- Section: Holder Information -->
+        <Label styleClass="section-title" text="Holder Information">
+            <font>
+                <Font name="System Bold" size="16.0"/>
+            </font>
+        </Label>
+
+        <GridPane hgap="24.0" vgap="20.0" styleClass="form-grid">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50.0"/>
+            </columnConstraints>
+
+            <!-- Holder Name Field -->
+            <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label styleClass="field-label" text="Name of the Holder *">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="holderNameField" promptText="Full name of the legal entity holder"
+                           styleClass="text-field">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </TextField>
+                <Label styleClass="help-text" text="Full legal name of the account holder.">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="holderNameError" managed="false" styleClass="error-text" visible="false">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+            </VBox>
+
+            <!-- Holder ID Field -->
+            <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label styleClass="field-label" text="Holder ID *">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="holderIdField" promptText="Unique identification number"
+                           styleClass="text-field">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </TextField>
+                <Label styleClass="help-text" text="Government-issued identification number.">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="holderIdError" managed="false" styleClass="error-text" visible="false">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+            </VBox>
+
+            <!-- Holder Email Field -->
+            <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label styleClass="field-label" text="Holder Email *">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="holderEmailField" promptText="holder@example.com" styleClass="text-field">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </TextField>
+                <Label styleClass="help-text" text="Valid email address of the holder.">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="holderEmailError" managed="false" styleClass="error-text" visible="false">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+            </VBox>
+
+            <!-- Landline Phone Field -->
+            <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label styleClass="field-label" text="Landline Phone *">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="landlinePhoneField" promptText="8 digits" styleClass="text-field">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </TextField>
+                <Label styleClass="help-text" text="Fixed phone number (8 digits).">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="landlinePhoneError" managed="false" styleClass="error-text" visible="false">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+            </VBox>
+
+            <!-- Expiration Date Field -->
+            <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label styleClass="field-label" text=" Contract Expiration Date (Optional)">
+                    <font>
+                        <Font name="System Bold" size="13.0"/>
+                    </font>
+                </Label>
+                <DatePicker fx:id="contractExpirationDatePicker" promptText="Select date"
+                            styleClass="date-picker"/>
+                <Label styleClass="help-text" text="Leave empty if the service is permanent.">
+                    <font>
+                        <Font size="11.0"/>
+                    </font>
+                </Label>
+            </VBox>
+        </GridPane>
+
+        <Separator styleClass="form-separator"/>
+
         <!-- Document Upload Section -->
         <VBox spacing="12.0" styleClass="upload-section">
             <Label fx:id="uploadSectionLabel" styleClass="section-title" text="Supporting Documents">
@@ -245,7 +376,6 @@
 
         <!-- Separator -->
         <Separator styleClass="form-separator" />
-
         <!-- Action Buttons -->
         <HBox alignment="CENTER_RIGHT" spacing="12.0" styleClass="button-container">
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancel" styleClass="btn-secondary" text="Cancel">

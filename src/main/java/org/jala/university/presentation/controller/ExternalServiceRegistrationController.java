@@ -1,6 +1,7 @@
 package org.jala.university.presentation.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto;
+import org.jala.university.application.dto.HolderDto;
 import org.jala.university.application.dto.RegistrationDocumentDto;
 import org.jala.university.application.dto.ValidationResultDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
@@ -31,8 +33,10 @@ import org.jala.university.application.validator.ValidationConstants;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.domain.repository.ExternalServiceRepository;
+import org.jala.university.domain.repository.HolderRepository;
 import org.jala.university.domain.repository.RegistrationDocumentRepository;
 import org.jala.university.infrastructure.persistance.ExternalServiceRepositoryImpl;
+import org.jala.university.infrastructure.persistance.HolderRepositoryImpl;
 import org.jala.university.infrastructure.persistance.RegistrationDocumentRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.store.ExternalServiceDataStore;
@@ -50,6 +54,8 @@ import java.util.List;
 public class ExternalServiceRegistrationController extends BaseController {
 
     private static final int MAX_PROVIDER_NAME_LENGTH = 100;
+    private static final int MAX_HOLDER_NAME_LENGTH = 150;
+    private static final int MIN_HOLDER_NAME_LENGTH = 3;
     private static final int ACCOUNT_REFERENCE_LENGTH = 10;
     private static final int PHONE_NUMBER_LENGTH = 10;
     private static final int BYTES_PER_KB = 1024;
@@ -58,6 +64,9 @@ public class ExternalServiceRegistrationController extends BaseController {
     private static final int FILE_ITEM_SPACING = 4;
     private static final int FILE_ITEM_PADDING = 12;
     private static final int FILE_ITEM_HBOX_SPACING = 10;
+    private static final int LANDLINE_LENGTH = 8;
+    private static final int MAX_HOLDER_ID_LENGTH = 20;
+    private static final int MIN_HOLDER_ID_LENGTH = 5;
 
     // FXML Components - Header
     @FXML
@@ -83,7 +92,22 @@ public class ExternalServiceRegistrationController extends BaseController {
     private TextField emailField;
 
     @FXML
+    private DatePicker contractExpirationDatePicker;
+
+    @FXML
     private TextArea contactDetailsArea;
+
+    @FXML
+    private TextField holderNameField;
+
+    @FXML
+    private TextField holderIdField;
+
+    @FXML
+    private TextField holderEmailField;
+
+    @FXML
+    private TextField landlinePhoneField;
 
     // FXML Components - Labels
     @FXML
@@ -97,6 +121,18 @@ public class ExternalServiceRegistrationController extends BaseController {
 
     @FXML
     private Label emailError;
+
+    @FXML
+    private Label holderNameError;
+
+    @FXML
+    private Label holderIdError;
+
+    @FXML
+    private Label holderEmailError;
+
+    @FXML
+    private Label landlinePhoneError;
 
     // FXML Components - Buttons
     @FXML
@@ -160,9 +196,11 @@ public class ExternalServiceRegistrationController extends BaseController {
                 new RegistrationDocumentRepositoryImpl(entityManager);
 
         // Initialize mappers and services
+        HolderRepository holderRepository = new HolderRepositoryImpl(entityManager);
+        // Initialize mapper and service
         ExternalServiceMapper mapper = new ExternalServiceMapper();
         service = new ExternalServiceRegistrationServiceImpl(
-                repository, mapper, validator);
+                repository, mapper, validator, holderRepository);
 
         RegistrationDocumentMapper documentMapper = new RegistrationDocumentMapper();
         documentService = new RegistrationDocumentServiceImpl(
@@ -178,6 +216,10 @@ public class ExternalServiceRegistrationController extends BaseController {
 
         // Phone number: only digits, max 10
         phoneNumberField.setTextFormatter(createNumericFormatter(PHONE_NUMBER_LENGTH));
+
+        holderNameField.setTextFormatter(createMaxLengthFormatter(MAX_HOLDER_NAME_LENGTH));
+        holderIdField.setTextFormatter(createNumericFormatter(MAX_HOLDER_ID_LENGTH));
+        landlinePhoneField.setTextFormatter(createNumericFormatter(LANDLINE_LENGTH));
     }
 
     private TextFormatter<String> createNumericFormatter(int maxLength) {
@@ -219,7 +261,7 @@ public class ExternalServiceRegistrationController extends BaseController {
         // Provider name validation
         providerNameField.textProperty().addListener((obs, oldVal, newVal) -> {
             validateProviderNameField();
-          //  updateSubmitButtonState();
+            //  updateSubmitButtonState();
         });
 
         // Account reference validation
@@ -243,6 +285,26 @@ public class ExternalServiceRegistrationController extends BaseController {
         // Country code validation
         phoneCountryCodeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             validatePhoneNumberField();
+            updateSubmitButtonState();
+        });
+
+        holderNameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateHolderNameField();
+            updateSubmitButtonState();
+        });
+
+        holderIdField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateHolderIdField();
+            updateSubmitButtonState();
+        });
+
+        holderEmailField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateHolderEmailField();
+            updateSubmitButtonState();
+        });
+
+        landlinePhoneField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateLandlinePhoneField();
             updateSubmitButtonState();
         });
     }
@@ -305,11 +367,70 @@ public class ExternalServiceRegistrationController extends BaseController {
         }
     }
 
+    private boolean validateHolderNameField() {
+        String value = holderNameField.getText();
+        if (value == null || value.trim().isEmpty()) {
+            showFieldError(holderNameField, holderNameError, "El nombre del titular es requerido");
+            return false;
+        } else if (value.trim().length() < MIN_HOLDER_NAME_LENGTH) {
+            showFieldError(holderNameField, holderNameError, "El nombre debe tener al menos 3 caracteres");
+            return false;
+        } else {
+            hideFieldError(holderNameField, holderNameError);
+            return true;
+        }
+    }
+
+    private boolean validateHolderIdField() {
+        String value = holderIdField.getText();
+        if (value == null || value.trim().isEmpty()) {
+            showFieldError(holderIdField, holderIdError, "El ID del titular es requerido");
+            return false;
+        } else if (value.trim().length() < MIN_HOLDER_ID_LENGTH) {
+            showFieldError(holderIdField, holderIdError, "El ID debe tener al menos 5 caracteres");
+            return false;
+        } else {
+            hideFieldError(holderIdField, holderIdError);
+            return true;
+        }
+    }
+
+    private boolean validateHolderEmailField() {
+        String value = holderEmailField.getText();
+        var error = validator.validateEmail(value);
+
+        if (error != null) {
+            showFieldError(holderEmailField, holderEmailError, error.getMessage());
+            return false;
+        } else {
+            hideFieldError(holderEmailField, holderEmailError);
+            return true;
+        }
+    }
+
+    private boolean validateLandlinePhoneField() {
+        String value = landlinePhoneField.getText();
+        if (value == null || value.trim().isEmpty()) {
+            showFieldError(landlinePhoneField, landlinePhoneError, "El teléfono fijo es requerido");
+            return false;
+        } else if (value.length() != LANDLINE_LENGTH) {
+            showFieldError(landlinePhoneField, landlinePhoneError, "Debe tener exactamente 8 dígitos");
+            return false;
+        } else {
+            hideFieldError(landlinePhoneField, landlinePhoneError);
+            return true;
+        }
+    }
+
     private boolean isFormValid() {
         return validateProviderNameField()
                 && validateAccountReferenceField()
                 && validatePhoneNumberField()
-                && validateEmailField();
+                && validateEmailField()
+                && validateHolderNameField()
+                && validateHolderIdField()
+                && validateHolderEmailField()
+                && validateLandlinePhoneField();
     }
 
     private void updateSubmitButtonState() {
@@ -350,40 +471,25 @@ public class ExternalServiceRegistrationController extends BaseController {
                 return;
             }
 
-            // Begin transaction
-            entityManager.getTransaction().begin();
+            // Submit the service registration (transaction handled by repository/service layer)
+            ExternalServiceDto submitted = service.submitRegistration(request);
 
-            try {
-                // Submit the service registration
-                ExternalServiceDto submitted = service.submitRegistration(request);
-
-                // Save the uploaded documents if any
-                if (!selectedFiles.isEmpty()) {
-                    saveDocuments(submitted.getId());
-                }
-
-                // Commit transaction
-                entityManager.getTransaction().commit();
-
-                ExternalServiceDataStore.get().add(submitted);
-
-                showFeedback("Servicio registrado exitosamente. ID: " + submitted.getId(), "success");
-                clearForm();
-
-                // Navigate back after a brief delay
-                javafx.animation.PauseTransition pause =
-                        new javafx.animation.PauseTransition(
-                                javafx.util.Duration.seconds(NAVIGATION_DELAY_SECONDS));
-                pause.setOnFinished(e -> ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView()));
-                pause.play();
-
-            } catch (Exception e) {
-                // Rollback transaction on error
-                if (entityManager.getTransaction().isActive()) {
-                    entityManager.getTransaction().rollback();
-                }
-                throw e;
+            // Save the uploaded documents if any
+            if (!selectedFiles.isEmpty()) {
+                saveDocuments(submitted.getId());
             }
+
+            ExternalServiceDataStore.get().add(submitted);
+
+            showFeedback("Servicio registrado exitosamente. ID: " + submitted.getId(), "success");
+            clearForm();
+
+            // Navigate back after a brief delay
+            javafx.animation.PauseTransition pause =
+                    new javafx.animation.PauseTransition(
+                            javafx.util.Duration.seconds(NAVIGATION_DELAY_SECONDS));
+            pause.setOnFinished(e -> ViewSwitcher.switchTo(ExternalPaymentView.MAIN.getView()));
+            pause.play();
 
         } catch (IllegalArgumentException e) {
             showFeedback("Error al enviar: " + e.getMessage(), "error");
@@ -435,7 +541,14 @@ public class ExternalServiceRegistrationController extends BaseController {
                 .phoneCountryCode(phoneCountryCodeComboBox.getValue())
                 .phoneNumber(phoneNumberField.getText().trim())
                 .email(emailField.getText().trim())
+                .contractExpiration(contractExpirationDatePicker.getValue())
                 .contactDetails(contactDetailsArea.getText().trim())
+                .holder(HolderDto.builder()
+                        .name(holderNameField.getText().trim())
+                        .identificationNumber(holderIdField.getText().trim())
+                        .email(holderEmailField.getText().trim())
+                        .landlinePhone(landlinePhoneField.getText().trim())
+                        .build())
                 .files(selectedFiles)
                 .build();
     }
@@ -611,6 +724,11 @@ public class ExternalServiceRegistrationController extends BaseController {
         phoneNumberField.clear();
         emailField.clear();
         contactDetailsArea.clear();
+        holderNameField.clear();
+        holderIdField.clear();
+        holderEmailField.clear();
+        landlinePhoneField.clear();
+        contractExpirationDatePicker.setValue(null);
         phoneCountryCodeComboBox.setValue("+591");
 
         // Clear file selection
@@ -628,6 +746,10 @@ public class ExternalServiceRegistrationController extends BaseController {
         hideFieldError(accountReferenceField, accountReferenceError);
         hideFieldError(phoneNumberField, phoneNumberError);
         hideFieldError(emailField, emailError);
+        hideFieldError(holderNameField, holderNameError);
+        hideFieldError(holderIdField, holderIdError);
+        hideFieldError(holderEmailField, holderEmailError);
+        hideFieldError(landlinePhoneField, landlinePhoneError);
     }
 
     private void showFieldError(TextField field, Label errorLabel, String message) {

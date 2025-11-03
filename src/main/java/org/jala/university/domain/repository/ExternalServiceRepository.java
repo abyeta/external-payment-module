@@ -17,6 +17,12 @@ public interface ExternalServiceRepository extends Repository<ExternalService, U
 
     boolean existsByAccountReference(String accountReference);
 
+    boolean existsByProviderName(String providerName);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
+
     ExternalService saveAndFlush(ExternalService entity);
 }
 
