@@ -16,6 +16,8 @@ public interface ExternalServiceRepository extends Repository<ExternalService, U
     Optional<ExternalService> findByAccountReference(String accountReference);
 
     boolean existsByAccountReference(String accountReference);
+
+    ExternalService saveAndFlush(ExternalService entity);
 }
 
 

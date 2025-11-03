@@ -3,6 +3,9 @@ package org.jala.university.application.dto;
 import lombok.Builder;
 import lombok.Value;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * DTO representing a request to register a new external service.
  * This is used to transfer data from the presentation layer to the service layer.
@@ -16,6 +19,7 @@ public class ExternalServiceRegistrationRequestDto {
     String phoneNumber;
     String email;
     String contactDetails;
+    List<File> files;
 }
 
 

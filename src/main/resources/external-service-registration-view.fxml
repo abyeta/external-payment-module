@@ -185,6 +185,67 @@
         <!-- Separator -->
         <Separator styleClass="form-separator" />
 
+        <!-- Document Upload Section -->
+        <VBox spacing="12.0" styleClass="upload-section">
+            <Label fx:id="uploadSectionLabel" styleClass="section-title" text="Supporting Documents">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Label>
+            <Label fx:id="uploadDescriptionLabel" styleClass="section-description" text="Attach the following required documents:" wrapText="true">
+                <font>
+                    <Font size="13.0" />
+                </font>
+            </Label>
+            <Label styleClass="section-description" text="Commercial registry  -  Constitution document  -  Income fax return" wrapText="true">
+                <font>
+                    <Font size="13.0" />
+                </font>
+            </Label>
+
+            <!-- Drop Zone -->
+            <VBox fx:id="dropZone" alignment="CENTER" onDragDropped="#onDragDropped" onDragOver="#onDragOver" spacing="10.0" styleClass="drop-zone">
+                <padding>
+                    <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
+                </padding>
+                <Label styleClass="drop-zone-icon" text="☁" />
+                <Label styleClass="drop-zone-text" text="Click to upload or drag and drop">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Label styleClass="drop-zone-hint" text="PDF only (MAX. 10MB per file)">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+                <Button fx:id="selectFilesButton" mnemonicParsing="false" onAction="#onSelectFiles" styleClass="btn-select-files" text="Select Files">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+            </VBox>
+
+            <!-- Files List -->
+            <VBox fx:id="filesListContainer" managed="false" spacing="8.0" styleClass="files-list-container" visible="false">
+                <Label styleClass="field-label" text="Uploaded Files:">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <VBox fx:id="filesListBox" spacing="6.0" styleClass="files-list" />
+            </VBox>
+
+            <Label fx:id="uploadError" managed="false" styleClass="error-text" visible="false">
+                <font>
+                    <Font size="11.0" />
+                </font>
+            </Label>
+        </VBox>
+
+        <!-- Separator -->
+        <Separator styleClass="form-separator" />
+
         <!-- Action Buttons -->
         <HBox alignment="CENTER_RIGHT" spacing="12.0" styleClass="button-container">
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancel" styleClass="btn-secondary" text="Cancel">
