@@ -37,7 +37,9 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
         validServiceFieldsOrThrow(request);
         validHolderFieldsOrThrow(request);
         ExternalService entity = mapper.mapFromRequest(request);
-        return mapper.mapTo(repository.save(entity));
+        // Use saveAndFlush to ensure the entity ID is generated before mapping to DTO
+        ExternalService saved = repository.saveAndFlush(entity);
+        return mapper.mapTo(saved);
     }
 
     @Override
