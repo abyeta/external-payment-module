@@ -22,6 +22,7 @@ import org.jala.university.infrastructure.persistance.HolderRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.store.ExternalServiceDataStore;
 
+
 public class MainMenuController extends BaseController {
 
     @FXML
@@ -29,14 +30,25 @@ public class MainMenuController extends BaseController {
     @FXML
     private Label message;
 
-    /**
+    @FXML
+    private VBox confirmBox;
+    @FXML
+    private Label confirmMessage;
+    @FXML
+    private Button confirmYes;
+    @FXML
+    private Button confirmNo;
+
+    private ExternalServiceRegistrationService service;
+
+
+  /**
      * Inicializa el menú principal:
      * construye el servicio, llena el store si está vacío
      * y renderiza la tabla de servicios.
      */
     @FXML
     public final void initialize() {
-        // Construir servicio (JPA/Hibernate)
         final EntityManager em = Persistence
                 .createEntityManagerFactory("external-payment-pu")
                 .createEntityManager();
@@ -45,10 +57,11 @@ public class MainMenuController extends BaseController {
         final HolderRepository holderRepository = new HolderRepositoryImpl(em);
         final ExternalServiceMapper mapper = new ExternalServiceMapper();
         final ServiceDataValidator validator = new ServiceDataValidator();
-        ExternalServiceRegistrationService service = new ExternalServiceRegistrationServiceImpl(
-                repo, mapper, validator, holderRepository);
+        this.service = new ExternalServiceRegistrationServiceImpl(
+            repo, mapper, validator, holderRepository);
 
-        final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+
+      final ExternalServiceDataStore store = ExternalServiceDataStore.get();
         if (store.masterList().isEmpty()) {
             store.setAll(service.findAll());
         }
@@ -63,19 +76,70 @@ public class MainMenuController extends BaseController {
     }
 
     private void toggleService(final ExternalServiceDto dto) {
-        final String action = dto.isEnabled() ? "deshabilitando" : "habilitando";
-        message.setText("⏸ Cambiando estado: " + action + " " + dto.getProviderName());
-        message.setVisible(true);
-        message.setManaged(true);
+      final boolean newState = !dto.isEnabled();
+
+      String action = newState ? "enable" : "disable";
+      String messageText = String.format(
+          "Are you sure you want to %s the service \"%s\"?",
+          action,
+          dto.getProviderName()
+      );
+
+      showConfirmBox(messageText, () -> {
+        try {
+          ExternalServiceDto updated = service.setEnabled(dto.getId(), newState);
+
+          final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+          store.setAll(service.findAll());
+          renderTable();
+
+          String status;
+          if (updated.isEnabled()) {
+            status = "enabled";
+          } else {
+            status = "disabled";
+          }
+
+
+        } catch (Exception ex) {
+          message.setText("Error changing state: " + ex.getMessage());
+          message.setVisible(true);
+          message.setManaged(true);
+        }
+      });
     }
 
     private void deleteService(final ExternalServiceDto dto) {
-        message.setText("🗑 Eliminando: " + dto.getProviderName());
-        message.setVisible(true);
-        message.setManaged(true);
+      String firstMsg = String.format(
+          "Are you sure you want to delete the service \"%s\"?",
+          dto.getProviderName()
+      );
+
+      showConfirmBox(firstMsg, () -> {
+        String secondMsg = String.format(
+            "This action cannot be undone.\nDo you really want to permanently delete \"%s\"?",
+            dto.getProviderName()
+        );
+
+        showConfirmBox(secondMsg, () -> {
+          try {
+            service.delete(dto.getId());
+
+            final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+            store.setAll(service.findAll());
+            renderTable();
+
+
+          } catch (Exception ex) {
+            message.setText("Error deleting service: " + ex.getMessage());
+            message.setVisible(true);
+            message.setManaged(true);
+          }
+        });
+      });
     }
 
-    @FXML
+  @FXML
     private void onRegisterService() {
         ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE_REGISTRATION.getView());
     }
@@ -150,7 +214,7 @@ public class MainMenuController extends BaseController {
         statusBox.setPrefWidth(statusWidth);
         statusBox.setMaxWidth(statusWidth);
 
-        Label statusBadge = new Label(dto.isEnabled() ? "● Habilitado" : "● Deshabilitado");
+        Label statusBadge = new Label(dto.isEnabled() ? " Enabled" : " Disabled");
         if (dto.isEnabled()) {
             statusBadge.setStyle(
                     "-fx-background-color: #d4edda; "
@@ -253,5 +317,22 @@ public class MainMenuController extends BaseController {
                         + "-fx-border-color: #e0e0e0; "
                         + "-fx-border-width: 0 0 1 0;"
         ));
+    }
+
+    private void showConfirmBox(String message, Runnable onConfirm) {
+      confirmMessage.setText(message);
+      confirmBox.setVisible(true);
+      confirmBox.setManaged(true);
+
+      confirmYes.setOnAction(e -> {
+        confirmBox.setVisible(false);
+        confirmBox.setManaged(false);
+        onConfirm.run();
+      });
+
+      confirmNo.setOnAction(e -> {
+        confirmBox.setVisible(false);
+        confirmBox.setManaged(false);
+      });
     }
 }

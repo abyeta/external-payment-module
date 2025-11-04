@@ -23,6 +23,9 @@ public interface ExternalServiceRegistrationService {
 
     void delete(UUID id);
 
+    ExternalServiceDto setEnabled(UUID id, boolean enabled);
+
+
 }
 
 

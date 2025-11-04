@@ -73,7 +73,7 @@ public final class ExternalService implements BaseEntity<UUID> {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany (mappedBy = "externalService")
+    @OneToMany(mappedBy = "externalService", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RegistrationDocument> documents;
 
     @Override

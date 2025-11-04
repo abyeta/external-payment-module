@@ -61,49 +61,60 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
 
     @Override
     public void delete(UUID id) {
-        ExternalService entity = repository.findById(id);
-        if (entity == null) {
-            throw new IllegalStateException("External service not found with id: " + id);
-        }
-        repository.deleteById(id);
+      repository.deleteById(id);
     }
 
     private void validHolderFieldsOrThrow(ExternalServiceRegistrationRequestDto request) {
-        if (holderRepository.existsByEmail(request.getHolder().getEmail())) {
-            throw new IllegalArgumentException("holder email already exists");
-        }
+          if (holderRepository.existsByEmail(request.getHolder().getEmail())) {
+              throw new IllegalArgumentException("holder email already exists");
+          }
 
-        if (holderRepository.existsByIdentificationNumber(request.getHolder().getIdentificationNumber())) {
-            throw new IllegalArgumentException("holder identification number already exists");
-        }
+          if (holderRepository.existsByIdentificationNumber(request.getHolder().getIdentificationNumber())) {
+              throw new IllegalArgumentException("holder identification number already exists");
+          }
 
-        if (holderRepository.existsByLandlinePhone(request.getHolder().getLandlinePhone())) {
-            throw new IllegalArgumentException("holder  landline phone already exists");
-        }
-    }
+          if (holderRepository.existsByLandlinePhone(request.getHolder().getLandlinePhone())) {
+              throw new IllegalArgumentException("holder  landline phone already exists");
+          }
+      }
 
-    private void validServiceFieldsOrThrow(ExternalServiceRegistrationRequestDto request) {
+      private void validServiceFieldsOrThrow(ExternalServiceRegistrationRequestDto request) {
 
-        ValidationResultDto validationResult = validator.validateAll(request);
-        if (!validationResult.isValid()) {
-            throw new IllegalArgumentException("Validation failed: " + validationResult.getErrors());
-        }
+          ValidationResultDto validationResult = validator.validateAll(request);
+          if (!validationResult.isValid()) {
+              throw new IllegalArgumentException("Validation failed: " + validationResult.getErrors());
+          }
 
-        if (repository.existsByProviderName(request.getProviderName())) {
-            throw new IllegalArgumentException("Service name already exists");
-        }
+          if (repository.existsByProviderName(request.getProviderName())) {
+              throw new IllegalArgumentException("Service name already exists");
+          }
 
-        if (repository.existsByAccountReference(request.getAccountReference())) {
-            throw new IllegalArgumentException("Service account reference already exists");
-        }
+          if (repository.existsByAccountReference(request.getAccountReference())) {
+              throw new IllegalArgumentException("Service account reference already exists");
+          }
 
-        if (repository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Service email already exists");
-        }
+          if (repository.existsByEmail(request.getEmail())) {
+              throw new IllegalArgumentException("Service email already exists");
+          }
 
-        if (repository.existsByPhoneNumber(request.getPhoneNumber())) {
-            throw new IllegalArgumentException("Service phone number already exists");
+          if (repository.existsByPhoneNumber(request.getPhoneNumber())) {
+              throw new IllegalArgumentException("Service phone number already exists");
+          }
+      }
+
+      @Override
+      public ExternalServiceDto setEnabled(UUID id, boolean enabled) {
+        ExternalService entity = repository.findById(id);
+        if (entity == null) {
+          throw new IllegalStateException("External service not found with id: " + id);
         }
-    }
+        entity.setEnabled(enabled);
+        entity.setUpdatedAt(java.time.LocalDateTime.now());
+        ExternalService saved = repository.saveAndFlush(entity);
+        return mapper.mapTo(saved);
+      }
+
+
+
 
 }
