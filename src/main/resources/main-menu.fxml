@@ -93,4 +93,16 @@
             </font>
         </Label>
     </VBox>
+
+    <VBox fx:id="confirmBox"
+      alignment="CENTER"
+      visible="false" managed="false"
+      prefWidth="520" prefHeight="160">
+      <Label fx:id="confirmMessage" text="Are you sure?" maxWidth="420"/>
+      <HBox spacing="12" alignment="CENTER">
+        <Button fx:id="confirmYes" text="Yes"/>
+        <Button fx:id="confirmNo" text="No"/>
+      </HBox>
+    </VBox>
+
 </VBox>
