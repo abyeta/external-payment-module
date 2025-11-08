@@ -79,7 +79,29 @@ public final class ExternalServiceMapper implements Mapper<ExternalService, Exte
                 .build();
     }
 
-}
+    public void updateFromRequest(ExternalServiceRegistrationRequestDto request, ExternalService entity) {
+        if (request == null || entity == null) {
+            return;
+        }
 
+        if (request.getProviderName() != null && !request.getProviderName().isBlank()) {
+            entity.setProviderName(request.getProviderName());
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            entity.setEmail(request.getEmail());
+        }
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().isBlank()) {
+            entity.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getPhoneCountryCode() != null && !request.getPhoneCountryCode().isBlank()) {
+            entity.setPhoneCountryCode(request.getPhoneCountryCode());
+        }
+        if (request.getAccountReference() != null && !request.getAccountReference().isBlank()) {
+            entity.setAccountReference(request.getAccountReference());
+        }
+
+        entity.setUpdatedAt(LocalDateTime.now());
+    }
+}
 
 

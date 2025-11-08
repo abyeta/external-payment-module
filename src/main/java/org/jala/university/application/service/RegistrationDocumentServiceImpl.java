@@ -1,5 +1,6 @@
 package org.jala.university.application.service;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.jala.university.application.dto.RegistrationDocumentDto;
 import org.jala.university.application.mapper.RegistrationDocumentMapper;
 import org.jala.university.domain.entity.ExternalService;
@@ -24,12 +25,13 @@ public class RegistrationDocumentServiceImpl implements RegistrationDocumentServ
      * Constructor for RegistrationDocumentServiceImpl.
      *
      * @param documentRepository the document repository
-     * @param serviceRepository the service repository
-     * @param mapper the document mapper
+     * @param serviceRepository  the service repository
+     * @param mapper             the document mapper
+     * @param emf
      */
     public RegistrationDocumentServiceImpl(RegistrationDocumentRepository documentRepository,
-                                            ExternalServiceRepository serviceRepository,
-                                            RegistrationDocumentMapper mapper) {
+                                           ExternalServiceRepository serviceRepository,
+                                           RegistrationDocumentMapper mapper, EntityManagerFactory emf) {
         this.documentRepository = documentRepository;
         this.serviceRepository = serviceRepository;
         this.mapper = mapper;

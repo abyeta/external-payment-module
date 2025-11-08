@@ -21,6 +21,11 @@ import org.jala.university.infrastructure.persistance.ExternalServiceRepositoryI
 import org.jala.university.infrastructure.persistance.HolderRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.store.ExternalServiceDataStore;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
 
 
 public class MainMenuController extends BaseController {
@@ -41,8 +46,7 @@ public class MainMenuController extends BaseController {
 
     private ExternalServiceRegistrationService service;
 
-
-  /**
+    /**
      * Inicializa el menú principal:
      * construye el servicio, llena el store si está vacío
      * y renderiza la tabla de servicios.
@@ -58,10 +62,9 @@ public class MainMenuController extends BaseController {
         final ExternalServiceMapper mapper = new ExternalServiceMapper();
         final ServiceDataValidator validator = new ServiceDataValidator();
         this.service = new ExternalServiceRegistrationServiceImpl(
-            repo, mapper, validator, holderRepository);
+                repo, mapper, validator, holderRepository);
 
-
-      final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+        final ExternalServiceDataStore store = ExternalServiceDataStore.get();
         if (store.masterList().isEmpty()) {
             store.setAll(service.findAll());
         }
@@ -70,76 +73,98 @@ public class MainMenuController extends BaseController {
     }
 
     private void editService(final ExternalServiceDto dto) {
-        message.setText("✏ Editando: " + dto.getProviderName());
-        message.setVisible(true);
-        message.setManaged(true);
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/external-service-update-view.fxml")
+            );
+            Parent root = loader.load();
+
+            ExternalServiceUpdateController controller = loader.getController();
+            controller.setForUpdate(dto.getId(), () -> {
+                renderTable();
+                message.setText("Servicio actualizado");
+                message.setVisible(true);
+                message.setManaged(true);
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Editar: " + dto.getProviderName());
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.setText("Error al abrir edición");
+            message.setVisible(true);
+            message.setManaged(true);
+        }
     }
 
     private void toggleService(final ExternalServiceDto dto) {
-      final boolean newState = !dto.isEnabled();
+        final boolean newState = !dto.isEnabled();
 
-      String action = newState ? "enable" : "disable";
-      String messageText = String.format(
-          "Are you sure you want to %s the service \"%s\"?",
-          action,
-          dto.getProviderName()
-      );
+        String action = newState ? "enable" : "disable";
+        String messageText = String.format(
+                "Are you sure you want to %s the service \"%s\"?",
+                action,
+                dto.getProviderName()
+        );
 
-      showConfirmBox(messageText, () -> {
-        try {
-          ExternalServiceDto updated = service.setEnabled(dto.getId(), newState);
+        showConfirmBox(messageText, () -> {
+            try {
+                ExternalServiceDto updated = service.setEnabled(dto.getId(), newState);
 
-          final ExternalServiceDataStore store = ExternalServiceDataStore.get();
-          store.setAll(service.findAll());
-          renderTable();
+                final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+                store.setAll(service.findAll());
+                renderTable();
 
-          String status;
-          if (updated.isEnabled()) {
-            status = "enabled";
-          } else {
-            status = "disabled";
-          }
+                String status;
+                if (updated.isEnabled()) {
+                    status = "enabled";
+                } else {
+                    status = "disabled";
+                }
 
-
-        } catch (Exception ex) {
-          message.setText("Error changing state: " + ex.getMessage());
-          message.setVisible(true);
-          message.setManaged(true);
-        }
-      });
+            } catch (Exception ex) {
+                message.setText("Error changing state: " + ex.getMessage());
+                message.setVisible(true);
+                message.setManaged(true);
+            }
+        });
     }
 
     private void deleteService(final ExternalServiceDto dto) {
-      String firstMsg = String.format(
-          "Are you sure you want to delete the service \"%s\"?",
-          dto.getProviderName()
-      );
-
-      showConfirmBox(firstMsg, () -> {
-        String secondMsg = String.format(
-            "This action cannot be undone.\nDo you really want to permanently delete \"%s\"?",
-            dto.getProviderName()
+        String firstMsg = String.format(
+                "Are you sure you want to delete the service \"%s\"?",
+                dto.getProviderName()
         );
 
-        showConfirmBox(secondMsg, () -> {
-          try {
-            service.delete(dto.getId());
+        showConfirmBox(firstMsg, () -> {
+            String secondMsg = String.format(
+                    "This action cannot be undone.\nDo you really want to permanently delete \"%s\"?",
+                    dto.getProviderName()
+            );
 
-            final ExternalServiceDataStore store = ExternalServiceDataStore.get();
-            store.setAll(service.findAll());
-            renderTable();
+            showConfirmBox(secondMsg, () -> {
+                try {
+                    service.delete(dto.getId());
 
+                    final ExternalServiceDataStore store = ExternalServiceDataStore.get();
+                    store.setAll(service.findAll());
+                    renderTable();
 
-          } catch (Exception ex) {
-            message.setText("Error deleting service: " + ex.getMessage());
-            message.setVisible(true);
-            message.setManaged(true);
-          }
+                } catch (Exception ex) {
+                    message.setText("Error deleting service: " + ex.getMessage());
+                    message.setVisible(true);
+                    message.setManaged(true);
+                }
+            });
         });
-      });
     }
 
-  @FXML
+    @FXML
     private void onRegisterService() {
         ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE_REGISTRATION.getView());
     }
@@ -320,19 +345,19 @@ public class MainMenuController extends BaseController {
     }
 
     private void showConfirmBox(String message, Runnable onConfirm) {
-      confirmMessage.setText(message);
-      confirmBox.setVisible(true);
-      confirmBox.setManaged(true);
+        confirmMessage.setText(message);
+        confirmBox.setVisible(true);
+        confirmBox.setManaged(true);
 
-      confirmYes.setOnAction(e -> {
-        confirmBox.setVisible(false);
-        confirmBox.setManaged(false);
-        onConfirm.run();
-      });
+        confirmYes.setOnAction(e -> {
+            confirmBox.setVisible(false);
+            confirmBox.setManaged(false);
+            onConfirm.run();
+        });
 
-      confirmNo.setOnAction(e -> {
-        confirmBox.setVisible(false);
-        confirmBox.setManaged(false);
-      });
+        confirmNo.setOnAction(e -> {
+            confirmBox.setVisible(false);
+            confirmBox.setManaged(false);
+        });
     }
 }
