@@ -22,27 +22,16 @@ import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto
 import org.jala.university.application.dto.HolderDto;
 import org.jala.university.application.dto.RegistrationDocumentDto;
 import org.jala.university.application.dto.ValidationResultDto;
-import org.jala.university.application.mapper.ExternalServiceMapper;
-import org.jala.university.application.mapper.RegistrationDocumentMapper;
+import org.jala.university.application.factory.ServiceFactory;
 import org.jala.university.application.service.ExternalServiceRegistrationService;
-import org.jala.university.application.service.ExternalServiceRegistrationServiceImpl;
 import org.jala.university.application.service.RegistrationDocumentService;
-import org.jala.university.application.service.RegistrationDocumentServiceImpl;
 import org.jala.university.application.validator.ServiceDataValidator;
 import org.jala.university.application.validator.ValidationConstants;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
-import org.jala.university.domain.repository.ExternalServiceRepository;
-import org.jala.university.domain.repository.HolderRepository;
-import org.jala.university.domain.repository.RegistrationDocumentRepository;
-import org.jala.university.infrastructure.persistance.ExternalServiceRepositoryImpl;
-import org.jala.university.infrastructure.persistance.HolderRepositoryImpl;
-import org.jala.university.infrastructure.persistance.RegistrationDocumentRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.store.ExternalServiceDataStore;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +40,7 @@ import java.util.List;
  * Controller for the External Service Registration view.
  * Handles user interactions, validation, and communication with the service layer.
  */
-public class ExternalServiceRegistrationController extends BaseController {
+public final class ExternalServiceRegistrationController extends BaseController {
 
     private static final int MAX_PROVIDER_NAME_LENGTH = 100;
     private static final int MAX_HOLDER_NAME_LENGTH = 150;
@@ -69,110 +58,53 @@ public class ExternalServiceRegistrationController extends BaseController {
     private static final int MIN_HOLDER_ID_LENGTH = 5;
 
     // FXML Components - Header
-    @FXML
-    private Label pageTitleLabel;
-
-    @FXML
-    private Label pageDescriptionLabel;
+    @FXML private Label pageTitleLabel;
+    @FXML private Label pageDescriptionLabel;
 
     // FXML Components - Form Fields
-    @FXML
-    private TextField providerNameField;
-
-    @FXML
-    private TextField accountReferenceField;
-
-    @FXML
-    private ComboBox<String> phoneCountryCodeComboBox;
-
-    @FXML
-    private TextField phoneNumberField;
-
-    @FXML
-    private TextField emailField;
-
-    @FXML
-    private DatePicker contractExpirationDatePicker;
-
-    @FXML
-    private TextArea contactDetailsArea;
-
-    @FXML
-    private TextField holderNameField;
-
-    @FXML
-    private TextField holderIdField;
-
-    @FXML
-    private TextField holderEmailField;
-
-    @FXML
-    private TextField landlinePhoneField;
+    @FXML private TextField providerNameField;
+    @FXML private TextField accountReferenceField;
+    @FXML private ComboBox<String> phoneCountryCodeComboBox;
+    @FXML private TextField phoneNumberField;
+    @FXML private TextField emailField;
+    @FXML private DatePicker contractExpirationDatePicker;
+    @FXML private TextArea contactDetailsArea;
+    @FXML private TextField holderNameField;
+    @FXML private TextField holderIdField;
+    @FXML private TextField holderEmailField;
+    @FXML private TextField landlinePhoneField;
 
     // FXML Components - Labels
-    @FXML
-    private Label providerNameError;
-
-    @FXML
-    private Label accountReferenceError;
-
-    @FXML
-    private Label phoneNumberError;
-
-    @FXML
-    private Label emailError;
-
-    @FXML
-    private Label holderNameError;
-
-    @FXML
-    private Label holderIdError;
-
-    @FXML
-    private Label holderEmailError;
-
-    @FXML
-    private Label landlinePhoneError;
+    @FXML private Label providerNameError;
+    @FXML private Label accountReferenceError;
+    @FXML private Label phoneNumberError;
+    @FXML private Label emailError;
+    @FXML private Label holderNameError;
+    @FXML private Label holderIdError;
+    @FXML private Label holderEmailError;
+    @FXML private Label landlinePhoneError;
 
     // FXML Components - Buttons
-    @FXML
-    private Button cancelButton;
-
-    @FXML
-    private Button submitButton;
+    @FXML private Button cancelButton;
+    @FXML private Button submitButton;
 
     // FXML Components - Feedback
-    @FXML
-    private Label feedbackLabel;
+    @FXML private Label feedbackLabel;
 
     // FXML Components - File Upload
-    @FXML
-    private VBox dropZone;
+    @FXML private VBox dropZone;
+    @FXML private VBox filesListContainer;
+    @FXML private VBox filesListBox;
+    @FXML private Label uploadError;
+    @FXML private Button selectFilesButton;
 
-    @FXML
-    private VBox filesListContainer;
-
-    @FXML
-    private VBox filesListBox;
-
-    @FXML
-    private Label uploadError;
-
-    @FXML
-    private Button selectFilesButton;
-
-    // Services and dependencies
+    // Services (inyectados por ServiceFactory)
     private ExternalServiceRegistrationService service;
     private RegistrationDocumentService documentService;
     private ServiceDataValidator validator;
-    private EntityManager entityManager;
 
     // File management
     private List<File> selectedFiles = new ArrayList<>();
-
-    /**
-     * Init services for controller.
-     */
     @FXML
     public void initialize() {
         initializeServices();
@@ -182,41 +114,16 @@ public class ExternalServiceRegistrationController extends BaseController {
         disableSubmitButton();
     }
 
-
     private void initializeServices() {
-        // Initialize validator
-        validator = new ServiceDataValidator();
-
-        // Initialize EntityManager and repository
-        entityManager = Persistence
-                .createEntityManagerFactory("external-payment-pu")
-                .createEntityManager();
-        ExternalServiceRepository repository = new ExternalServiceRepositoryImpl(entityManager);
-        RegistrationDocumentRepository documentRepository =
-                new RegistrationDocumentRepositoryImpl(entityManager);
-
-        // Initialize mappers and services
-        HolderRepository holderRepository = new HolderRepositoryImpl(entityManager);
-        // Initialize mapper and service
-        ExternalServiceMapper mapper = new ExternalServiceMapper();
-        service = new ExternalServiceRegistrationServiceImpl(
-                repository, mapper, validator, holderRepository);
-
-        RegistrationDocumentMapper documentMapper = new RegistrationDocumentMapper();
-        documentService = new RegistrationDocumentServiceImpl(
-                documentRepository, repository, documentMapper);
+        this.validator = ServiceFactory.getValidator();
+        this.service = ServiceFactory.getRegistrationService();
+        this.documentService = ServiceFactory.getDocumentService();
     }
 
     private void setupTextFormatters() {
-        // Provider name: max 100 characters
         providerNameField.setTextFormatter(createMaxLengthFormatter(MAX_PROVIDER_NAME_LENGTH));
-
-        // Account reference: only digits, max 10
         accountReferenceField.setTextFormatter(createNumericFormatter(ACCOUNT_REFERENCE_LENGTH));
-
-        // Phone number: only digits, max 10
         phoneNumberField.setTextFormatter(createNumericFormatter(PHONE_NUMBER_LENGTH));
-
         holderNameField.setTextFormatter(createMaxLengthFormatter(MAX_HOLDER_NAME_LENGTH));
         holderIdField.setTextFormatter(createNumericFormatter(MAX_HOLDER_ID_LENGTH));
         landlinePhoneField.setTextFormatter(createNumericFormatter(LANDLINE_LENGTH));
@@ -240,7 +147,6 @@ public class ExternalServiceRegistrationController extends BaseController {
             return null;
         });
     }
-
     private void populateCountryCodeComboBox() {
         phoneCountryCodeComboBox.getItems().addAll(
                 "+591", // Bolivia
@@ -783,4 +689,3 @@ public class ExternalServiceRegistrationController extends BaseController {
         feedbackLabel.setManaged(false);
     }
 }
-
