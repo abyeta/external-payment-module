@@ -6,7 +6,9 @@ import org.jala.university.commons.presentation.View;
 @Getter
 public enum ExternalPaymentView {
     MAIN("main-menu.fxml"),
-    EXTERNAL_SERVICE_REGISTRATION("external-service-registration-view.fxml");
+    EXTERNAL_SERVICE_REGISTRATION("external-service-registration-view.fxml"),
+    EXTERNAL_SERVICE("external-service-view.fxml"),
+    EXTERNAL_SERVICE_INVOICES("external-service-invoices-view.fxml");
 
     private final View view;
 
