@@ -108,13 +108,9 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
         if (entity == null) {
           throw new IllegalStateException("External service not found with id: " + id);
         }
-        entity.setEnabled(enabled);
-        entity.setUpdatedAt(java.time.LocalDateTime.now());
-        ExternalService saved = repository.saveAndFlush(entity);
-        return mapper.mapTo(saved);
+          entity.setEnabled(enabled);
+          entity.setUpdatedAt(java.time.LocalDateTime.now());
+          ExternalService saved = repository.saveAndFlush(entity);
+          return mapper.mapTo(saved);
       }
-
-
-
-
 }

@@ -17,6 +17,22 @@ public final class ServiceDataValidator {
     private static final int BYTES_PER_KB = 1024;
     private static final int BYTES_PER_MB = 1024;
 
+    /**
+     * Valida todos los campos del request (alias de validateForRegistration para compatibilidad).
+     *
+     * @param requestDto DTO con los datos a validar.
+     * @return Resultado de la validación.
+     */
+    public ValidationResultDto validateAll(ExternalServiceRegistrationRequestDto requestDto) {
+        return validateForRegistration(requestDto);
+    }
+
+    /**
+     * Valida el nombre del proveedor.
+     *
+     * @param providerName Nombre del proveedor.
+     * @return Error de validación si es inválido, o null si es válido.
+     */
     public ValidationErrorDto validateProviderName(String providerName) {
         if (providerName == null || providerName.trim().isEmpty()) {
             return ValidationErrorDto.builder()
@@ -45,6 +61,12 @@ public final class ServiceDataValidator {
         return null;
     }
 
+    /**
+     * Valida la referencia de cuenta.
+     *
+     * @param accountReference Referencia de cuenta.
+     * @return Error de validación si es inválida, o null si es válida.
+     */
     public ValidationErrorDto validateAccountReference(String accountReference) {
         if (accountReference == null || accountReference.trim().isEmpty()) {
             return ValidationErrorDto.builder()
@@ -65,6 +87,12 @@ public final class ServiceDataValidator {
         return null;
     }
 
+    /**
+     * Valida el código de país del teléfono.
+     *
+     * @param phoneCountryCode Código de país.
+     * @return Error de validación si es inválido, o null si es válido.
+     */
     public ValidationErrorDto validatePhoneCountryCode(String phoneCountryCode) {
         if (phoneCountryCode == null || phoneCountryCode.trim().isEmpty()) {
             return ValidationErrorDto.builder()
@@ -85,6 +113,12 @@ public final class ServiceDataValidator {
         return null;
     }
 
+    /**
+     * Valida el número de teléfono.
+     *
+     * @param phoneNumber Número de teléfono.
+     * @return Error de validación si es inválido, o null si es válido.
+     */
     public ValidationErrorDto validatePhoneNumber(String phoneNumber) {
         if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
             return ValidationErrorDto.builder()
@@ -105,6 +139,12 @@ public final class ServiceDataValidator {
         return null;
     }
 
+    /**
+     * Valida el correo electrónico.
+     *
+     * @param email Dirección de correo electrónico.
+     * @return Error de validación si es inválido, o null si es válido.
+     */
     public ValidationErrorDto validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             return ValidationErrorDto.builder()
@@ -125,7 +165,14 @@ public final class ServiceDataValidator {
         return null;
     }
 
-    public ValidationErrorDto validateExistingFiles(List<File> files) {
+    /**
+     * Valida que haya al menos un archivo (solo para registro).
+     * En actualización, se maneja por separado.
+     *
+     * @param files Lista de archivos.
+     * @return Error si no hay archivos, o null si es válido.
+     */
+    public ValidationErrorDto validateFilesForRegistration(List<File> files) {
         if (files == null || files.isEmpty()) {
             return ValidationErrorDto.builder()
                     .field(ValidationConstants.FIELD_FILES)
@@ -137,11 +184,16 @@ public final class ServiceDataValidator {
         return null;
     }
 
+    /**
+     * Valida el tamaño de un archivo.
+     *
+     * @param file Archivo a validar.
+     * @return Error si excede el tamaño permitido, o null si es válido.
+     */
     public ValidationErrorDto validateFileSize(File file) {
+        long fileSizeInMb = file.length() / (BYTES_PER_KB * BYTES_PER_MB);
 
-        long fileSize = file.length() / (BYTES_PER_KB * BYTES_PER_MB);
-
-        if (fileSize > ValidationConstants.MAX_FILE_SIZE) {
+        if (fileSizeInMb > ValidationConstants.MAX_FILE_SIZE) {
             return ValidationErrorDto.builder()
                     .field(ValidationConstants.FIELD_FILES)
                     .errorCode(ValidationConstants.ERROR_FILE_SIZE_EXCEEDED)
@@ -152,67 +204,77 @@ public final class ServiceDataValidator {
         return null;
     }
 
-    public ValidationResultDto validateAll(ExternalServiceRegistrationRequestDto requestDto) {
+    /**
+     * Valida todos los campos para REGISTRO.
+     * NO valida archivos aquí → se hace en el controlador.
+     *
+     * @param requestDto DTO con los datos a validar.
+     * @return Resultado de la validación.
+     */
+    public ValidationResultDto validateForRegistration(ExternalServiceRegistrationRequestDto requestDto) {
         List<ValidationErrorDto> errors = new ArrayList<>();
 
         if (requestDto == null) {
-            return ValidationResultDto.builder()
-                    .valid(false)
-                    .errors(errors)
-                    .build();
+            return ValidationResultDto.builder().valid(false).errors(errors).build();
         }
 
-        // Validate provider name
-        ValidationErrorDto providerNameError = validateProviderName(requestDto.getProviderName());
-        if (providerNameError != null) {
-            errors.add(providerNameError);
-        }
+        addError(errors, validateProviderName(requestDto.getProviderName()));
+        addError(errors, validateAccountReference(requestDto.getAccountReference()));
+        addError(errors, validatePhoneCountryCode(requestDto.getPhoneCountryCode()));
+        addError(errors, validatePhoneNumber(requestDto.getPhoneNumber()));
+        addError(errors, validateEmail(requestDto.getEmail()));
 
-        // Validate account reference
-        ValidationErrorDto accountRefError = validateAccountReference(requestDto.getAccountReference());
-        if (accountRefError != null) {
-            errors.add(accountRefError);
-        }
+        List<File> files = requestDto.getFiles();
+        if (files != null && !files.isEmpty()) {
+            ValidationErrorDto filesError = validateFilesForRegistration(files);
+            addError(errors, filesError);
 
-        // Validate phone country code
-        ValidationErrorDto phoneCountryCodeError = validatePhoneCountryCode(requestDto.getPhoneCountryCode());
-        if (phoneCountryCodeError != null) {
-            errors.add(phoneCountryCodeError);
-        }
-
-        // Validate phone number
-        ValidationErrorDto phoneNumberError = validatePhoneNumber(requestDto.getPhoneNumber());
-        if (phoneNumberError != null) {
-            errors.add(phoneNumberError);
-        }
-
-        // Validate email
-        ValidationErrorDto emailError = validateEmail(requestDto.getEmail());
-        if (emailError != null) {
-            errors.add(emailError);
-        }
-
-        //Validate files integrity
-        ValidationErrorDto filesError = validateExistingFiles(requestDto.getFiles());
-        if (filesError != null) {
-            errors.add(filesError);
-        } else {
-            for (File file : requestDto.getFiles()) {
-                ValidationErrorDto fileError = validateFileSize(file);
-                if (fileError != null) {
-                    errors.add(fileError);
-                }
+            for (File file : files) {
+                addError(errors, validateFileSize(file));
             }
         }
-
-        // contactDetails is optional, no validation needed
 
         return ValidationResultDto.builder()
                 .valid(errors.isEmpty())
                 .errors(errors)
                 .build();
     }
+
+    /**
+     * Valida solo campos de texto para ACTUALIZACIÓN.
+     * NO toca archivos.
+     *
+     * @param requestDto DTO con los datos a validar.
+     * @return Resultado de la validación.
+     */
+    public ValidationResultDto validateForUpdate(ExternalServiceRegistrationRequestDto requestDto) {
+        List<ValidationErrorDto> errors = new ArrayList<>();
+
+        if (requestDto == null) {
+            return ValidationResultDto.builder().valid(false).errors(errors).build();
+        }
+
+        addError(errors, validateProviderName(requestDto.getProviderName()));
+        addError(errors, validateAccountReference(requestDto.getAccountReference()));
+        addError(errors, validatePhoneCountryCode(requestDto.getPhoneCountryCode()));
+        addError(errors, validatePhoneNumber(requestDto.getPhoneNumber()));
+        addError(errors, validateEmail(requestDto.getEmail()));
+
+        return ValidationResultDto.builder()
+                .valid(errors.isEmpty())
+                .errors(errors)
+                .build();
+    }
+
+    /**
+     * Agrega un error a la lista si no es null.
+     *
+     * @param errors Lista de errores acumulados.
+     * @param error  Error individual a agregar.
+     */
+    private void addError(List<ValidationErrorDto> errors, ValidationErrorDto error) {
+        if (error != null) {
+            errors.add(error);
+        }
+    }
 }
-
-
-
