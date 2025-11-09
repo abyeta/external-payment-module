@@ -38,7 +38,7 @@
                 <Font name="System Bold" size="13.0" />
             </font>
         </Label>
-        <TextField promptText="Type the code user" style="-fx-padding: 10 10 10 10" />
+        <TextField promptText="Type the code user" style="-fx-padding: 10 10 10 10" maxWidth="200"/>
         <Label fx:id="feedbackLabel" managed="false" styleClass="error-text" visible="false" wrapText="true">
             <font>
                 <Font name="System Bold" size="12.0" />

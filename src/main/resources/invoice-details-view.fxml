@@ -17,7 +17,7 @@
             <HBox spacing="10" VBox.vgrow="ALWAYS">
                 <Button fx:id="backButton" onAction="#onBackToInvoices" styleClass="btn-back" text="Return to invoices" />
                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                    <Label styleClass="page-title" text="Service name" />
+                    <Label styleClass="page-title" text="Service name ✏ " />
                 </HBox>
             </HBox>
 
@@ -87,40 +87,6 @@
             </VBox>
 
         </VBox>
-
-
-
-<!--        <GridPane>-->
-
-<!--            <rowConstraints>-->
-<!--                <RowConstraints percentHeight="100" />-->
-<!--            </rowConstraints>-->
-
-<!--            <columnConstraints>-->
-<!--                <ColumnConstraints percentWidth="70" />-->
-<!--                <ColumnConstraints percentWidth="30" />-->
-<!--            </columnConstraints>-->
-
-<!--            <padding>-->
-<!--                <Insets bottom="30" left="30" right="30" top="20" />-->
-<!--            </padding>-->
-
-
-<!--                <VBox styleClass="form-container">-->
-<!--                    <VBox>-->
-<!--                        <Label styleClass="feedback-label" text="Type" />-->
-<!--                    </VBox>-->
-<!--                    <HBox>-->
-<!--                        <Label styleClass="form-container" text="hola" />-->
-<!--                    </HBox>-->
-<!--                </VBox>-->
-<!--            -->
-
-<!--            <VBox GridPane.columnIndex="1">-->
-<!--                <Label styleClass="feedback-label" text="Date of issue" />-->
-<!--            </VBox>-->
-<!--        </GridPane>-->
-
 
     </ScrollPane>
 

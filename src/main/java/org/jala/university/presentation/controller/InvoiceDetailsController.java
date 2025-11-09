@@ -4,8 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
+import org.jala.university.commons.presentation.BaseController;
 
-public class InvoiceDetailsController {
+public class InvoiceDetailsController extends BaseController {
     public Button backButton;
     public Label userNameField;
     public Label userCodeField;
