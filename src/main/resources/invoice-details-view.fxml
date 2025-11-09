@@ -60,8 +60,6 @@
                     <VBox styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
                         <Label styleClass="field-label" text="Code" />
                         <Label fx:id="invoiceCodeLabel" text="code-example" />
-                        <Label styleClass="field-label" text="Expiration date" />
-                        <Label fx:id="expirationLabel" text="dd/mm/yyyy" />
                     </VBox>
                 </GridPane>
 
