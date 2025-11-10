@@ -1,0 +1,18 @@
+[
+  {"clients":
+  [
+    {"invoices":
+    [
+      {
+        "amount":30000.0,
+        "code":"1234",
+        "expedition_date":"12\/04\/2025",
+        "description":"Factura de televisión por cable",
+        "expiration_date":"22\/04\/2025",
+        "client_name":"Luis Barajas",
+        "status":"pending"
+      },
+      {
+        "amount":35000.0,
+        "code":"4321",
+        "expedition_date":"12\/05\/2025","description":"Factura de servicio telefónico","expiration_date":"22\/05\/2025","client_name":"Luis Barajas","status":"pending"}],"client_code":"123456"},{"invoices":[{"amount":28000.0,"code":"0987","expedition_date":"15\/04\/2025","description":"Factura de televisión por cable","expiration_date":"23\/04\/2025","client_name":"Carlos Pabon","status":"Paid"},{"amount":38000.0,"code":"8901","expedition_date":"16\/05\/2025","description":"Factura de servicio telefónico","expiration_date":"26\/05\/2025","client_name":"Carlos Pabón","status":"pending"}],"client_code":"654321"}],"service_code":"1234567890"},{"clients":[{"invoices":[{"amount":30000.0,"code":"1234","expedition_date":"12\/04\/2025","description":"Factura de servicio eléctrico","expiration_date":"22\/04\/2025","client_name":"Luis Barajas","status":"pending"},{"amount":35000.0,"code":"4321","expedition_date":"12\/05\/2025","description":"Factura de servicio telefónico","expiration_date":"22\/05\/2025","client_name":"Luis Barajas","status":"pending"}],"client_code":"098765"},{"invoices":[{"amount":28000.0,"code":"0987","expedition_date":"15\/04\/2025","description":"Factura de servicio eléctrico","expiration_date":"23\/04\/2025","client_name":"Carlos Pabon","status":"Paid"},{"amount":38000.0,"code":"8901","expedition_date":"16\/05\/2025","description":"Factura de servicio telefónico","expiration_date":"26\/05\/2025","client_name":"Carlos Pabón","status":"pending"}],"client_code":"567890"}],"service_code":"0987654321"}]
