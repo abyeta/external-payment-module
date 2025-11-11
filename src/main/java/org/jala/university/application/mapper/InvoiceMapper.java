@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 
 
-public class InvoiceMapper implements Mapper<JSONObject, InvoiceDto> {
+public final class InvoiceMapper implements Mapper<JSONObject, InvoiceDto> {
 
     @Override
     public InvoiceDto mapTo(JSONObject jsonObject) {
@@ -15,10 +15,10 @@ public class InvoiceMapper implements Mapper<JSONObject, InvoiceDto> {
                 .code((String) jsonObject.get("code"))
                 .description((String) jsonObject.get("description"))
                 .amount((Double) jsonObject.get("amount"))
-                .clientName((String) jsonObject.get("clientName"))
+                .clientName((String) jsonObject.get("client_name"))
                 .status((String) jsonObject.get("status"))
-                .expeditionDate((String) jsonObject.get("expeditionDate"))
-                .expirationDate((String) jsonObject.get("expirationDate"))
+                .expeditionDate((String) jsonObject.get("expedition_date"))
+                .expirationDate((String) jsonObject.get("expiration_date"))
                 .build();
     }
 
@@ -28,10 +28,10 @@ public class InvoiceMapper implements Mapper<JSONObject, InvoiceDto> {
         jsonObject.put("code", invoiceDto.getCode());
         jsonObject.put("description", invoiceDto.getDescription());
         jsonObject.put("amount", invoiceDto.getAmount());
-        jsonObject.put("clientName", invoiceDto.getClientName());
+        jsonObject.put("client_name", invoiceDto.getClientName());
         jsonObject.put("status", invoiceDto.getStatus());
-        jsonObject.put("expeditionDate", invoiceDto.getExpeditionDate());
-        jsonObject.put("expirationDate", invoiceDto.getExpirationDate());
+        jsonObject.put("expedition_date", invoiceDto.getExpeditionDate());
+        jsonObject.put("expiration_date", invoiceDto.getExpirationDate());
         return jsonObject;
     }
 }

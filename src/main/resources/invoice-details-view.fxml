@@ -17,7 +17,7 @@
             <HBox spacing="10" VBox.vgrow="ALWAYS">
                 <Button fx:id="backButton" onAction="#onBackToInvoices" styleClass="btn-back" text="Return to invoices" />
                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                    <Label styleClass="page-title" text="Service name ✏ " />
+                    <Label fx:id="serviceNameLabel" styleClass="page-title" text="Service name" />
                 </HBox>
             </HBox>
 
@@ -58,8 +58,10 @@
                     </VBox>
                     <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <VBox styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                        <Label styleClass="field-label" text="code" />
+                        <Label styleClass="field-label" text="Code" />
                         <Label fx:id="invoiceCodeLabel" text="code-example" />
+                        <Label styleClass="field-label" text="Expiration date" />
+                        <Label fx:id="expirationLabel" text="dd/mm/yyyy" />
                     </VBox>
                 </GridPane>
 

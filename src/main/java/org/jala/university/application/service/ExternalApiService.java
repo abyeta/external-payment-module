@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ExternalApiService {
 
-    List<InvoiceDto>  getInvoices(String clientCode, String serviceCode);
+    List<InvoiceDto>  getInvoices(String clientCode, String serviceCode) throws IllegalArgumentException;
     boolean updateStatus(String invoiceCode, String serviceCode);
 
 }

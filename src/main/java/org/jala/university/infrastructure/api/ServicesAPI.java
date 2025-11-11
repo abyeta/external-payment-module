@@ -11,8 +11,15 @@ public final class ServicesAPI implements InvoicesAPI {
 
     private final String jsonPath = "invoices.json";
     private final JSONParser parser = new JSONParser();
+
+    /**
+     * Get the invoices from an external service by its client code  and service code.
+     * @param clientCode The client user to search for.
+     * @param serviceCode The service code to search for.
+     * @return A json with the invoices.
+     */
     @Override
-    public JSONArray getInvoices(String clientCode, String serviceCode) {
+    public JSONArray getInvoices(String clientCode, String serviceCode) throws IllegalArgumentException {
         //TODO this is a simulation. Need to be changed then.
         try (FileReader reader = new FileReader(jsonPath)) {
             JSONArray ja = (JSONArray) parser.parse(reader);
@@ -27,7 +34,9 @@ public final class ServicesAPI implements InvoicesAPI {
                             return (JSONArray) client.get("invoices");
                         }
                     }
+                    throw new IllegalArgumentException("Client not found");
                 }
+                throw new IllegalArgumentException("Service not found");
             }
 
         } catch (IOException | ParseException e) {
@@ -38,6 +47,13 @@ public final class ServicesAPI implements InvoicesAPI {
         return null;
     }
 
+    /**
+     * Update the state of an invoice to "paid".
+     * @param invoiceCode code of invoice to search for.
+     * @param serviceCode service to which the invoice belongs
+     * @return true if the invoice was found. false if the invoice was not found.
+     * @throws IllegalAccessException if the json was not found (only for the simulation).
+     */
     @Override
     public boolean updateStatus(String invoiceCode, String serviceCode) throws IllegalAccessException {
 

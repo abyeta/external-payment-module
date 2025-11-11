@@ -4,7 +4,7 @@ import org.json.simple.JSONArray;
 
 public interface InvoicesAPI {
 
-    JSONArray getInvoices(String clientCode, String serviceCode);
+    JSONArray getInvoices(String clientCode, String serviceCode) throws IllegalArgumentException;
     boolean updateStatus(String invoiceCode, String serviceCode) throws IllegalAccessException;
 
 }
