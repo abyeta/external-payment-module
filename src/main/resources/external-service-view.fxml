@@ -23,11 +23,11 @@
 
     <HBox spacing="10" GridPane.rowIndex="0">
         <Button fx:id="backButton" onAction="#onBackToMain" styleClass="btn-back" text="Return to Menu" />
+        <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" GridPane.rowIndex="0">
+            <Label text="Service name" fx:id="serviceNameLabel" styleClass="page-title" />
+        </VBox>
     </HBox>
 
-    <VBox alignment="CENTER_RIGHT" GridPane.vgrow="ALWAYS" GridPane.rowIndex="0">
-        <Label text="Service name" fx:id="serviceNameLabel" styleClass="page-title" />
-    </VBox>
 
     <VBox spacing="20" styleClass="form-container" GridPane.rowIndex="1">
         <padding>

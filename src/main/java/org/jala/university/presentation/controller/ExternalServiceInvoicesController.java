@@ -37,9 +37,9 @@ public final class ExternalServiceInvoicesController extends BaseController {
         setInvoices();
     }
 
-    public void setInvoices () {
+    public void setInvoices() {
 
-        if(invoices == null || invoices.isEmpty()) {
+        if (invoices == null || invoices.isEmpty()) {
             Label emptyLabel = new Label("There are not invoices to process");
             emptyLabel.setStyle("-fx-text-fill: #6c757d; -fx-font-size: 14px; -fx-padding: 40; -fx-alignment: center;");
             invoicesTableContainer.setAlignment(Pos.CENTER);
@@ -54,7 +54,7 @@ public final class ExternalServiceInvoicesController extends BaseController {
 
     }
 
-    public HBox setInvoiceBox (InvoiceDto dto) {
+    public HBox setInvoiceBox(InvoiceDto dto) {
         HBox invoiceBox =  new HBox();
         invoiceBox.setAlignment(Pos.CENTER_LEFT);
         invoiceBox.setStyle("-fx-background-color: white; "
@@ -98,22 +98,22 @@ public final class ExternalServiceInvoicesController extends BaseController {
         return buttonBox;
     }
 
-    public Button createActionButton (String buttonText, String color) {
+    public Button createActionButton(String buttonText, String color) {
         Button button = new Button(buttonText);
         button.setStyle(
-                "-fx-background-color: " + color + "0.7); " +
-                        "-fx-font-family: 'System Bold';" +
-                        "-fx-font-size: 11;");
-        button.setOnMouseEntered(event -> button.setStyle("-fx-background-color: " + color + "1.5); " +
-                "-fx-font-family: 'System Bold';" +
-                "-fx-font-size: 11;"));
-        button.setOnMouseExited(event -> button.setStyle("-fx-background-color: " + color + "0.7); " +
-                "-fx-font-family: 'System Bold';" +
-                "-fx-font-size: 11;"));
+                "-fx-background-color: " + color + "0.7); "
+                        + "-fx-font-family: 'System Bold';"
+                        + "-fx-font-size: 11;");
+        button.setOnMouseEntered(event -> button.setStyle("-fx-background-color: " + color + "1.5); "
+                + "-fx-font-family: 'System Bold';"
+                + "-fx-font-size: 11;"));
+        button.setOnMouseExited(event -> button.setStyle("-fx-background-color: " + color + "0.7); "
+                + "-fx-font-family: 'System Bold';"
+                + "-fx-font-size: 11;"));
         return button;
     }
 
-    public void onView (InvoiceDto dto) {
+    public void onView(InvoiceDto dto) {
         globalContext.setInvoice(dto);
         ViewSwitcher.switchTo(ExternalPaymentView.INVOICE_DETAILS.getView());
     }
@@ -122,15 +122,15 @@ public final class ExternalServiceInvoicesController extends BaseController {
 
     }
 
-    public Label createColumnLabel (String text, int size) {
+    public Label createColumnLabel(String text, int size) {
         Label label = new Label(text);
-        label.setStyle("-fx-text-fill: #6c757d;" +
-                "    -fx-font-size: 11px;" +
-                "    -fx-font-weight: bold;" +
-                "    -fx-min-width: " + size + "px;" +
-                "    -fx-pref-width: " + size + "px;" +
-                "    -fx-max-width: " + size + "px;" +
-                "    -fx-alignment: CENTER_LEFT;");
+        label.setStyle("-fx-text-fill: #6c757d;"
+               + "    -fx-font-size: 11px;"
+               + "    -fx-font-weight: bold;"
+               + "    -fx-min-width: " + size + "px;"
+               + "    -fx-pref-width: " + size + "px;"
+               + "    -fx-max-width: " + size + "px;"
+               + "    -fx-alignment: CENTER_LEFT;");
         return label;
     }
 

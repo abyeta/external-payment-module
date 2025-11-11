@@ -40,7 +40,7 @@ public final class ExternalServiceController extends BaseController {
 
     @FXML
     public void onBackToMain(ActionEvent actionEvent) {
-
+        ViewSwitcher.switchTo(ExternalPaymentView.USER_HOME.getView());
     }
     @FXML
     public void onSearch(ActionEvent actionEvent) {

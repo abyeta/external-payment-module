@@ -12,6 +12,7 @@ import org.jala.university.application.service.ExternalServiceRegistrationServic
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.presentation.ExternalPaymentView;
+import org.jala.university.presentation.GlobalContext;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public final class UserHomeController extends BaseController {
 
   // Mock customer ID for MVP - In production, this would come from authentication
   private static final UUID MOCK_CUSTOMER_ID =
-      UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+      UUID.fromString("0707a256-4970-4756-b8e7-1acb81a1ce8b");
 
   private static final int MESSAGE_AUTO_HIDE_DELAY = 3000;
   private static final int ITEM_SPACING = 12;
@@ -63,6 +64,8 @@ public final class UserHomeController extends BaseController {
 
   @FXML
   private Button confirmNo;
+
+  private final GlobalContext globalContext = GlobalContext.getInstance();
 
   private CustomerService linkService;
   private ExternalServiceRegistrationService  externalServiceRegistrationService;
@@ -285,6 +288,8 @@ public final class UserHomeController extends BaseController {
                 + "-fx-background-radius: 6px; "
                 + "-fx-padding: 16px;");
 
+    item.setOnMouseClicked(e -> onServiceClicked(service));
+
     // Icon
     Label icon = new Label("📄");
     icon.setStyle("-fx-font-size: 24px;");
@@ -322,6 +327,11 @@ public final class UserHomeController extends BaseController {
     item.getChildren().addAll(icon, infoBox, unlinkButton);
 
     return item;
+  }
+
+  private void onServiceClicked(ExternalServiceDto externalServiceDto) {
+      globalContext.setExternalService(externalServiceDto);
+      ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE.getView());
   }
 
   private void showUnlinkConfirmation(ExternalServiceDto service) {
