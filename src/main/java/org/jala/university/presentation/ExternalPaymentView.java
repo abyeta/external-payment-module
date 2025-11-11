@@ -15,7 +15,6 @@ public enum ExternalPaymentView {
     USER_HOME("user-home-view.fxml");
 
     private final View view;
-
     ExternalPaymentView(String fileName) {
         this.view = new View(fileName);
     }
