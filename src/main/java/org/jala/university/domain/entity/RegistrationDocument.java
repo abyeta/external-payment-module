@@ -24,7 +24,7 @@ import java.util.UUID;
  * Entity representing a registration document for an external service.
  */
 @Entity
-@Table (name = "RegistrationDocument")
+@Table (name = "registration_document")
 @Data
 @Builder
 @NoArgsConstructor

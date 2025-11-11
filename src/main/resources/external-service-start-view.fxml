@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+  xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="org.jala.university.presentation.controller.StartMenuController"
+  prefWidth="1200.0" prefHeight="800.0"
+  stylesheets="@styles/external-service-styles.css"
+  styleClass="root-container"
+  alignment="CENTER" spacing="20">
+
+  <padding>
+    <Insets top="80" right="40" bottom="80" left="40"/>
+  </padding>
+
+  <Label text="Menú de MVP" styleClass="page-title">
+    <font><Font name="System Bold" size="32.0"/></font>
+  </Label>
+
+  <VBox spacing="16" alignment="CENTER">
+    <Button text="Administrador" onAction="#goAdmin" styleClass="btn-menu" prefWidth="260"/>
+    <Button text="Usuario"  onAction="#goUser"  styleClass="btn-menu" prefWidth="260"/>
+  </VBox>
+
+</VBox>
