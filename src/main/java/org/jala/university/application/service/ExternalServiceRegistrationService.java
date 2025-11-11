@@ -25,6 +25,8 @@ public interface ExternalServiceRegistrationService {
 
     ExternalServiceDto setEnabled(UUID id, boolean enabled);
 
+    List<ExternalServiceDto> searchServices(String searchTerm);
+
 
 }
 

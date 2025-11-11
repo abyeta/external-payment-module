@@ -554,4 +554,17 @@
   -fx-background-color: #f8f9fa;
 
 }
-
+--------------
+.btn-menu {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #007bff;
+    -fx-border-width: 2;
+    -fx-text-fill: #007bff;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 10 20;
+}
+.btn-menu:hover { -fx-background-color: #007bff; -fx-text-fill: #ffffff; }
+.btn-menu:pressed { -fx-background-color: #0056b3; -fx-text-fill: #ffffff; }

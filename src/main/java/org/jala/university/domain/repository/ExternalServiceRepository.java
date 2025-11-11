@@ -3,6 +3,7 @@ package org.jala.university.domain.repository;
 import org.jala.university.commons.domain.repository.Repository;
 import org.jala.university.domain.entity.ExternalService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,6 +25,8 @@ public interface ExternalServiceRepository extends Repository<ExternalService, U
     boolean existsByPhoneNumber(String phoneNumber);
 
     ExternalService saveAndFlush(ExternalService entity);
+
+    List<ExternalService> searchServices(String searchTerm);
 }
 
 
