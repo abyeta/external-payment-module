@@ -9,6 +9,7 @@ import org.jala.university.commons.infrastructure.persistance.CrudRepository;
 import org.jala.university.domain.entity.ExternalService;
 import org.jala.university.domain.repository.ExternalServiceRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -172,6 +173,30 @@ public class ExternalServiceRepositoryImpl
 
         Long count = query.getSingleResult();
         return count > 0;
+    }
+
+    /**
+     * Searches for enabled external services matching the search term.
+     * Performs a case-insensitive search across provider name, email, and phone number.
+     *
+     * @param searchTerm the term to search for
+     * @return a list of external services matching the search criteria, ordered by provider name
+     */
+    @Override
+    @Transactional
+    public List<ExternalService> searchServices(String searchTerm) {
+        String jpql = "SELECT e FROM ExternalService e WHERE "
+                + "(LOWER(e.providerName) LIKE LOWER(:term) "
+                + "OR LOWER(e.email) LIKE LOWER(:term) "
+                + "OR e.phoneNumber LIKE :term) "
+                + "AND e.enabled = true "
+                + "ORDER BY e.providerName";
+
+        TypedQuery<ExternalService> query = getEntityManager()
+                .createQuery(jpql, ExternalService.class);
+        query.setParameter("term", "%" + searchTerm + "%");
+
+        return query.getResultList();
     }
 
 }

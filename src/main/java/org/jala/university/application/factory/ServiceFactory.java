@@ -17,6 +17,7 @@ public final class ServiceFactory {
     private static ExternalServiceRegistrationService registrationService;
     private static ExternalServiceUpdateService updateService;
     private static RegistrationDocumentService documentService;
+    private static CustomerService customerServiceLinkService;
 
     private ServiceFactory() { }
 
@@ -80,6 +81,24 @@ public final class ServiceFactory {
 
         documentService = new RegistrationDocumentServiceImpl(docRepo, repo, docMapper, emf); // ← emf
         return documentService;
+    }
+
+    public static synchronized CustomerService getCustomerServiceLinkService() {
+        if (customerServiceLinkService != null) {
+            return customerServiceLinkService;
+        }
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        EntityManager em = emf.createEntityManager();
+
+        CustomerRepository customerRepo = new CustomerRepositoryImpl(em);
+        ExternalServiceMapper mapper = new ExternalServiceMapper();
+
+        customerServiceLinkService = new CustomerServiceImpl(
+                customerRepo,
+                mapper
+        );
+        return customerServiceLinkService;
     }
 
     private static EntityManager getEntityManager() {

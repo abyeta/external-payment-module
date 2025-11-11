@@ -360,4 +360,10 @@ public class MainMenuController extends BaseController {
             confirmBox.setManaged(false);
         });
     }
+
+    @FXML
+    private void backToMenu() {
+      ViewSwitcher.switchTo(ExternalPaymentView.START_MENU.getView());
+    }
+
 }

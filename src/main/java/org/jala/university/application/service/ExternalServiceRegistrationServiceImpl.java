@@ -113,4 +113,11 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
           ExternalService saved = repository.saveAndFlush(entity);
           return mapper.mapTo(saved);
       }
+
+      @Override
+    public List<ExternalServiceDto> searchServices(String searchTerm) {
+        return repository.searchServices(searchTerm).stream()
+                .map(mapper::mapTo)
+                .collect(Collectors.toList());
+    }
 }

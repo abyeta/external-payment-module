@@ -13,13 +13,18 @@
 
     <!-- Clases de entidad -->
     <class>org.jala.university.domain.entity.ExternalService</class>
+    <class>org.jala.university.domain.entity.Holder</class>
+    <class>org.jala.university.domain.entity.RegistrationDocument</class>
+    <class>org.jala.university.domain.entity.Customer</class>
 
     <properties>
       <!-- Configuración de base de datos MySQL -->
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/external_payment_db?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/external_payment_db?useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
       <property name="jakarta.persistence.jdbc.user" value="devuser"/>
       <property name="jakarta.persistence.jdbc.password" value="devpass"/>
+
+
 
       <!-- Configuración de Hibernate -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
