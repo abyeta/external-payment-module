@@ -1,16 +1,25 @@
 package org.jala.university.application.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import lombok.RequiredArgsConstructor;
+import org.jala.university.ServiceFactory;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.ExternalServiceRegistrationRequestDto;
 import org.jala.university.application.dto.ValidationResultDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
 import org.jala.university.application.validator.ServiceDataValidator;
+import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.ExternalService;
+import org.jala.university.domain.repository.AccountRepository;
 import org.jala.university.domain.repository.ExternalServiceRepository;
 import org.jala.university.domain.repository.HolderRepository;
+import org.jala.university.infrastructure.persistance.AccountRepositoryImpl;
+
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,9 +43,24 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
 
     @Override
     public ExternalServiceDto submitRegistration(ExternalServiceRegistrationRequestDto request) {
+        final double initialBalance = 0.0;
+
         validServiceFieldsOrThrow(request);
         validHolderFieldsOrThrow(request);
         ExternalService entity = mapper.mapFromRequest(request);
+
+        Random random = new Random();
+        Long number = Math.abs(random.nextLong());
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+        EntityManager em = emf.createEntityManager();
+        AccountRepository accountRepository = new AccountRepositoryImpl(em);
+        Account account = new Account();
+        account.setAccountNumber(number);
+        account.setBalance(initialBalance);
+        accountRepository.save(account);
+
+        entity.setAccountNumber(number);
         // Use saveAndFlush to ensure the entity ID is generated before mapping to DTO
         ExternalService saved = repository.saveAndFlush(entity);
         return mapper.mapTo(saved);

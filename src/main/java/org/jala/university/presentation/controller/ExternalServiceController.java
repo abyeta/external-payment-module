@@ -2,10 +2,17 @@ package org.jala.university.presentation.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.mapper.InvoiceMapper;
 import org.jala.university.application.service.ExternalApiService;
@@ -23,19 +30,22 @@ public final class ExternalServiceController extends BaseController {
     @FXML public Label serviceNameLabel;
     @FXML public TextField clientCodeField;
 
+    private ExternalServiceDto externalServiceDto;
+
     private final ExternalApiService apiService = new ExternalApiServiceImpl(new ServicesAPI(), new InvoiceMapper());;
     private final GlobalContext globalContext = GlobalContext.getInstance();
 
     @FXML
     public void initialize() {
         if (globalContext.getExternalService() == null) {
-
             ExternalServiceDto dto = ExternalServiceDto.builder()
                     .accountReference("1234567890")
                     .providerName("Jala")
                     .build();
             globalContext.setExternalService(dto);
         }
+        externalServiceDto = globalContext.getExternalService();
+        serviceNameLabel.setText(externalServiceDto.getProviderName());
     }
 
     @FXML
@@ -56,6 +66,7 @@ public final class ExternalServiceController extends BaseController {
             ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE_INVOICES.getView());
         } catch (IllegalArgumentException e) {
             showFeedback("A problem has occurred: " + e.getMessage());
+            
         }
 
     }

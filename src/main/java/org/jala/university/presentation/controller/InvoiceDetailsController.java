@@ -53,7 +53,7 @@ public final class InvoiceDetailsController extends BaseController {
     }
 
     public void onPayment(ActionEvent actionEvent) {
-
-
+        globalContext.setInvoice(invoice);
+        ViewSwitcher.switchTo(ExternalPaymentView.PAYMENT.getView());
     }
 }

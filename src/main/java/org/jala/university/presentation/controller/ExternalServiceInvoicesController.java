@@ -9,6 +9,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.InvoiceDto;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
@@ -26,6 +27,7 @@ public final class ExternalServiceInvoicesController extends BaseController {
     public Button backButton;
     public Label serviceNameLabel;
 
+    private ExternalServiceDto externalService;
     private List<InvoiceDto>  invoices;
 
     private final GlobalContext globalContext =  GlobalContext.getInstance();
@@ -34,6 +36,8 @@ public final class ExternalServiceInvoicesController extends BaseController {
     public void initialize() {
 
         invoices = globalContext.getInvoices();
+        externalService = globalContext.getExternalService();
+        serviceNameLabel.setText(externalService.getProviderName());
         setInvoices();
     }
 
@@ -70,8 +74,8 @@ public final class ExternalServiceInvoicesController extends BaseController {
                 + "-fx-border-color: #e0e0e0; "
                 + "-fx-border-width: 0 0 1 0;"));
 
-
-        Label serviceTypeLabel = new Label("Service Type");
+        //TODO the service type was hardcoded. After implementation of API verify if is a possible field.
+        Label serviceTypeLabel = new Label("Example Service Type");
         serviceTypeLabel.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(serviceTypeLabel, Priority.ALWAYS);
         Label codeLabel = createColumnLabel(dto.getCode(), MIN_CODE_WIDTH);
@@ -83,6 +87,7 @@ public final class ExternalServiceInvoicesController extends BaseController {
         return invoiceBox;
     }
 
+    //Create the action buttons for every invoice
     public HBox createActionButtons(InvoiceDto dto) {
         final int spacing = 6;
         HBox buttonBox = new HBox();
@@ -90,15 +95,15 @@ public final class ExternalServiceInvoicesController extends BaseController {
         buttonBox.setMinWidth(MIN_WIDTH);
         buttonBox.setSpacing(spacing);
 
-        Button payButton = createActionButton("Pay", "rgba(100,243,87,");
+        Button payButton = createButton("Pay", "rgba(100,243,87,");
         payButton.setOnAction(event -> onPay(dto));
-        Button viewButton = createActionButton("View", "rgb(35,142,243,");
+        Button viewButton = createButton("View", "rgb(35,142,243,");
         viewButton.setOnAction(event -> onView(dto));
         buttonBox.getChildren().addAll(payButton, viewButton);
         return buttonBox;
     }
 
-    public Button createActionButton(String buttonText, String color) {
+    public Button createButton(String buttonText, String color) {
         Button button = new Button(buttonText);
         button.setStyle(
                 "-fx-background-color: " + color + "0.7); "
@@ -119,7 +124,8 @@ public final class ExternalServiceInvoicesController extends BaseController {
     }
 
     public void onPay(InvoiceDto invoiceDto) {
-
+        globalContext.setInvoice(invoiceDto);
+        ViewSwitcher.switchTo(ExternalPaymentView.PAYMENT.getView());
     }
 
     public Label createColumnLabel(String text, int size) {

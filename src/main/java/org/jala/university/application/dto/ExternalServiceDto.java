@@ -24,6 +24,7 @@ public class ExternalServiceDto {
     String email;
     LocalDate contractExpiration;
     String contactDetails;
+    Long accountNumber;
     boolean enabled;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

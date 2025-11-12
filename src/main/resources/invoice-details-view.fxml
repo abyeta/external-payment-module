@@ -54,7 +54,7 @@
 
                     <VBox styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="1">
                         <Label styleClass="field-label" text="Billing period" />
-                        <Label fx:id="billingPeriodLabel" text="01/01/2025 - 01/01/2025" />
+                        <Label fx:id="billingPeriodLabel" text="dd/mm/yyyy - dd/mm/yyyy" />
                     </VBox>
                     <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <VBox styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1">

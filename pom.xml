@@ -28,6 +28,13 @@
       <artifactId>commons-module</artifactId>
       <version>${commons.module.version}</version>
     </dependency>
+
+      <dependency>
+          <groupId>org.jala.university</groupId>
+          <artifactId>transaction-module</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
+
     <!--    Third-party libs-->
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -11,9 +11,7 @@ public enum ExternalPaymentView {
     INVOICE_DETAILS("invoice-details-view.fxml"),
     EXTERNAL_SERVICE_INVOICES("external-service-invoices-view.fxml"),
     EXTERNAL_SERVICE_REGISTRATION("external-service-registration-view.fxml"),
-    EXTERNAL_SERVICE("external-service-view.fxml"),
-    EXTERNAL_SERVICE_INVOICES("external-service-invoices-view.fxml"),
-    INVOICE_DETAILS("invoice-details-view.fxml"),
+    PAYMENT("payment-view.fxml"),
     USER_HOME("user-home-view.fxml");
 
     private final View view;

@@ -36,15 +36,13 @@ public final class ServicesAPI implements InvoicesAPI {
                     }
                     throw new IllegalArgumentException("Client not found");
                 }
-                throw new IllegalArgumentException("Service not found");
             }
+            throw new IllegalArgumentException("Service not found");
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-
-        return null;
     }
 
     /**
