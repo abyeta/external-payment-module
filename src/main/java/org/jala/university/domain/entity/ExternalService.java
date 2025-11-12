@@ -54,7 +54,7 @@ public final class ExternalService implements BaseEntity<UUID> {
     @Column(name = "contact_details", columnDefinition = "TEXT")
     private String contactDetails;
 
-    @Column(name="account_number")
+    @Column(name = "account_number")
     private Long accountNumber;
 
     @Builder.Default

@@ -27,7 +27,7 @@ import org.jala.university.presentation.GlobalContext;
 
 import java.time.LocalDateTime;
 
-public class PaymentController extends BaseController {
+public final class PaymentController extends BaseController {
 
     @FXML public Label serviceNameLabel;
     @FXML public TextField accountNumberField;
@@ -58,7 +58,7 @@ public class PaymentController extends BaseController {
                 new AccountRepositoryImpl(em),
                 accountService);
 
-        if(globalContext.getExternalService() != null && globalContext.getInvoice()!=null) {
+        if (globalContext.getExternalService() != null && globalContext.getInvoice() != null) {
             externalService = globalContext.getExternalService();
             serviceNameLabel.setText(externalService.getProviderName());
             invoice = globalContext.getInvoice();
@@ -76,7 +76,7 @@ public class PaymentController extends BaseController {
 
     public void onPay(ActionEvent actionEvent) {
         String accountNumber = accountNumberField.getText();
-        if(accountNumber == null || accountNumber.isEmpty()) {
+        if (accountNumber == null || accountNumber.isEmpty()) {
             showFeedback("Please enter a valid account number");
             return;
         }
@@ -84,7 +84,7 @@ public class PaymentController extends BaseController {
         Long serviceAccountNumber = externalService.getAccountNumber();
         Long userAccountNumber = Long.valueOf(accountNumberField.getText());
         try {
-            if(!accountService.validateSufficientBalance(userAccountNumber, invoice.getAmount())){
+            if (!accountService.validateSufficientBalance(userAccountNumber, invoice.getAmount())) {
                 showFeedback("Insufficient balance");
                 return;
             }
@@ -98,12 +98,11 @@ public class PaymentController extends BaseController {
                     .build();
 
             TransactionDto dto = transactionService.createTransaction(transactionDto);
-            if(dto != null && dto.getState() == TransactionState.COMPLETED) {
+            if (dto != null && dto.getState() == TransactionState.COMPLETED) {
                 showPopUp();
                 service.updateStatus(invoice.getCode(), externalService.getAccountReference());
                 globalContext.getInvoices().remove(invoice);
-            } else
-            {
+            } else {
                 System.out.println("transaction not created");
             }
         } catch (IllegalArgumentException e) {
@@ -161,7 +160,7 @@ public class PaymentController extends BaseController {
         return contentBox;
     }
 
-    public VBox createTextBox () {
+    public VBox createTextBox() {
         VBox textBox = new VBox();
         textBox.setAlignment(Pos.CENTER);
         VBox.setVgrow(textBox, Priority.ALWAYS);
@@ -172,8 +171,9 @@ public class PaymentController extends BaseController {
     }
 
     public HBox createActionButtonBox() {
+        final int spacing = 10;
         HBox actionButtonBox = new HBox();
-        actionButtonBox.setSpacing(10);
+        actionButtonBox.setSpacing(spacing);
         actionButtonBox.setAlignment(Pos.CENTER_RIGHT);
         Button viewButton = new Button("View invoice");
         viewButton.setStyle("-fx-background-color: rgba(136,244,253,0.72); "
