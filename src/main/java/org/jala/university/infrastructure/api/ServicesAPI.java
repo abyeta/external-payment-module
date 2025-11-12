@@ -36,7 +36,6 @@ public final class ServicesAPI implements InvoicesAPI {
                     }
                     throw new IllegalArgumentException("Client not found");
                 }
-                throw new IllegalArgumentException("Service not found");
             }
             throw new IllegalArgumentException("Service not found");
 
