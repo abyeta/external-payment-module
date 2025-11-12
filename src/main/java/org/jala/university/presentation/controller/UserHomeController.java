@@ -25,7 +25,7 @@ public final class UserHomeController extends BaseController {
 
   // Mock customer ID for MVP - In production, this would come from authentication
   private static final UUID MOCK_CUSTOMER_ID =
-      UUID.fromString("0707a256-4970-4756-b8e7-1acb81a1ce8b");
+      UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
 
   private static final int MESSAGE_AUTO_HIDE_DELAY = 3000;
   private static final int ITEM_SPACING = 12;
