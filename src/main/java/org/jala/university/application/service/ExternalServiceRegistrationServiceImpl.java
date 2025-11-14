@@ -10,7 +10,9 @@ import org.jala.university.application.dto.ValidationResultDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
 import org.jala.university.application.validator.ServiceDataValidator;
 import org.jala.university.domain.entity.Account;
+import org.jala.university.domain.entity.Bank;
 import org.jala.university.domain.entity.ExternalService;
+import org.jala.university.domain.entity.User;
 import org.jala.university.domain.repository.AccountRepository;
 import org.jala.university.domain.repository.ExternalServiceRepository;
 import org.jala.university.domain.repository.HolderRepository;
@@ -57,12 +59,53 @@ public final class ExternalServiceRegistrationServiceImpl implements ExternalSer
         Account account = new Account();
         account.setAccountNumber(number);
         account.setBalance(initialBalance);
+        account.setEmail(request.getEmail());
+        account.setBank(getBank(em));
         accountRepository.save(account);
 
         entity.setAccountNumber(number);
         // Use saveAndFlush to ensure the entity ID is generated before mapping to DTO
         ExternalService saved = repository.saveAndFlush(entity);
         return mapper.mapTo(saved);
+    }
+
+
+    /**
+     * Get the bank to create an account.
+     * @param em EntityManager of transaction module.
+     * @return bank to create the account.
+     */
+    public Bank getBank(EntityManager em) {
+
+        final long id = 1L;
+        final long exampleDni = 123456789L;
+
+        Bank bank = em.find(Bank.class, id);
+
+        if (bank == null) {
+            em.getTransaction().begin();
+
+            User bankUser =  em.find(User.class, id);
+            if (bankUser == null) {
+                bankUser = User.builder()
+                        .id(1L)
+                        .address("Example address")
+                        .dniNumber(exampleDni)
+                        .firstName("Jala")
+                        .lastName("Bank")
+                        .build();
+                em.persist(em.merge(bankUser));
+            }
+
+            bank = Bank.builder()
+                    .id(1L)
+                    .user(bankUser)
+                    .name("JalaBank")
+                    .build();
+            em.persist(em.merge(bank));
+            em.getTransaction().commit();
+        }
+        return bank;
     }
 
     @Override

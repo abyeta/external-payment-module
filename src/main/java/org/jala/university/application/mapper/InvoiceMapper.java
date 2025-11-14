@@ -4,7 +4,6 @@ import org.jala.university.application.dto.InvoiceDto;
 import org.jala.university.commons.application.mapper.Mapper;
 import org.json.simple.JSONObject;
 
-import java.io.IOException;
 
 
 public final class InvoiceMapper implements Mapper<JSONObject, InvoiceDto> {

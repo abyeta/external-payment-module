@@ -1,27 +1,23 @@
 package org.jala.university.presentation.controller;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import org.jala.university.ServiceFactory;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.dto.InvoiceDto;
 import org.jala.university.application.dto.TransactionDto;
 import org.jala.university.application.mapper.AccountMapper;
 import org.jala.university.application.mapper.InvoiceMapper;
-import org.jala.university.application.mapper.TransactionMapper;
 import org.jala.university.application.service.*;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
+import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.TransactionState;
 import org.jala.university.infrastructure.api.ServicesAPI;
-import org.jala.university.infrastructure.persistance.AccountRepositoryImpl;
-import org.jala.university.infrastructure.persistance.TransactionRepositoryImpl;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.GlobalContext;
 
@@ -39,25 +35,15 @@ public final class PaymentController extends BaseController {
 
     private ExternalServiceDto  externalService;
     private InvoiceDto invoice;
-    private TransactionService transactionService;
-    private AccountService accountService;
 
+    private final AccountService accountService = ServiceFactory.getAccountService();
+    private final TransactionService transactionService = ServiceFactory.getTransactionService();
     private final GlobalContext globalContext = GlobalContext.getInstance();
     private final ExternalApiService service = new ExternalApiServiceImpl(new ServicesAPI(), new InvoiceMapper());
-
+    private final AccountMapper accountMapper = new AccountMapper();
 
     @FXML
     public void initialize() {
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
-        EntityManager em = emf.createEntityManager();
-        accountService = new AccountServiceImpl(new AccountMapper(), new AccountRepositoryImpl(em));
-        transactionService = new TransactionServiceImpl(
-                new TransactionMapper(),
-                new TransactionRepositoryImpl(em),
-                new AccountRepositoryImpl(em),
-                accountService);
-
         if (globalContext.getExternalService() != null && globalContext.getInvoice() != null) {
             externalService = globalContext.getExternalService();
             serviceNameLabel.setText(externalService.getProviderName());
@@ -83,6 +69,10 @@ public final class PaymentController extends BaseController {
 
         Long serviceAccountNumber = externalService.getAccountNumber();
         Long userAccountNumber = Long.valueOf(accountNumberField.getText());
+
+        Account userAccount = accountMapper.mapFrom(accountService.findByAccountNumber(userAccountNumber));
+        Account serviceAccount = accountMapper.mapFrom(accountService.findByAccountNumber(serviceAccountNumber));
+
         try {
             if (!accountService.validateSufficientBalance(userAccountNumber, invoice.getAmount())) {
                 showFeedback("Insufficient balance");
@@ -90,8 +80,8 @@ public final class PaymentController extends BaseController {
             }
 
             TransactionDto transactionDto = TransactionDto.builder()
-                    .source(accountNumber)
-                    .destination(serviceAccountNumber.toString())
+                    .sourceAccount(userAccount)
+                    .destinationAccount(serviceAccount)
                     .amount(invoice.getAmount())
                     .date(LocalDateTime.now())
                     .state(TransactionState.COMPLETED)
