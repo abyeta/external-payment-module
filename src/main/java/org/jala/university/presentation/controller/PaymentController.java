@@ -70,10 +70,9 @@ public final class PaymentController extends BaseController {
         Long serviceAccountNumber = externalService.getAccountNumber();
         Long userAccountNumber = Long.valueOf(accountNumberField.getText());
 
-        Account userAccount = accountMapper.mapFrom(accountService.findByAccountNumber(userAccountNumber));
-        Account serviceAccount = accountMapper.mapFrom(accountService.findByAccountNumber(serviceAccountNumber));
-
         try {
+            Account userAccount = accountMapper.mapFrom(accountService.findByAccountNumber(userAccountNumber));
+            Account serviceAccount = accountMapper.mapFrom(accountService.findByAccountNumber(serviceAccountNumber));
             if (!accountService.validateSufficientBalance(userAccountNumber, invoice.getAmount())) {
                 showFeedback("Insufficient balance");
                 return;
