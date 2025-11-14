@@ -23,7 +23,7 @@ public final class InvoiceMapper implements Mapper<JSONObject, InvoiceDto> {
     }
 
     @Override
-    public JSONObject mapFrom(InvoiceDto invoiceDto) throws IOException {
+    public JSONObject mapFrom(InvoiceDto invoiceDto) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code", invoiceDto.getCode());
         jsonObject.put("description", invoiceDto.getDescription());
