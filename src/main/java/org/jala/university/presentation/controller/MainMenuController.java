@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
 import org.jala.university.application.service.ExternalServiceRegistrationService;
@@ -290,8 +291,8 @@ public class MainMenuController extends BaseController {
         final int fontSize = 16;
         final int padding = 5;
         final int radius = 4;
-
         Button btn = new Button(icon);
+        btn.setFont(Font.font("Noto Color Emoji"));
         btn.setStyle(
                 "-fx-background-color: transparent; "
                         + "-fx-text-fill: " + color + "; "

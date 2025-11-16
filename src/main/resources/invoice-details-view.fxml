@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.DirectionalLight?>
+<?import javafx.scene.text.Font?>
+<VBox prefHeight="500.0" prefWidth="800.0" stylesheets="@styles/external-service-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.jala.university.presentation.controller.InvoiceDetailsController">
+    <ScrollPane fitToHeight="true" fitToWidth="true">
+        <VBox spacing="10">
+            <padding>
+                <Insets bottom="30" left="30" right="30" top="20" />
+            </padding>
+            <HBox spacing="10" VBox.vgrow="ALWAYS">
+                <Button fx:id="backButton" onAction="#onBackToInvoices" styleClass="btn-back" text="Return to invoices" />
+                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                    <Label fx:id="serviceNameLabel" styleClass="page-title" text="Service name" />
+                </HBox>
+            </HBox>
+
+
+            <!-- Information box -->
+            <VBox styleClass="form-container" spacing="10">
+                <padding>
+                    <Insets bottom="30" left="30" right="30" top="20" />
+                </padding>
+                <GridPane>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" percentWidth="50" />
+                    </columnConstraints>
+
+                    <rowConstraints>
+                        <RowConstraints minHeight="80.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="100.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+
+                    <padding>
+                        <Insets bottom="30" left="30" right="30" top="20" />
+                    </padding>
+
+                    <VBox GridPane.columnIndex="0" HBox.hgrow="ALWAYS">
+                        <Label styleClass="field-label" text="user name" />
+                        <Label fx:id="userNameField" text="luis example" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" HBox.hgrow="ALWAYS">
+                        <Label styleClass="field-label" text="User code" />
+                        <Label fx:id="userCodeField" text="code-example" />
+                    </VBox>
+
+                    <VBox styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label styleClass="field-label" text="Billing period" />
+                        <Label fx:id="billingPeriodLabel" text="dd/mm/yyyy - dd/mm/yyyy" />
+                    </VBox>
+                    <Separator orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <VBox styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label styleClass="field-label" text="Code" />
+                        <Label fx:id="invoiceCodeLabel" text="code-example" />
+                        <Label styleClass="field-label" text="Expiration date" />
+                        <Label fx:id="expirationLabel" text="dd/mm/yyyy" />
+                    </VBox>
+                </GridPane>
+
+                <Separator styleClass="form-separator" />
+
+                <VBox VBox.vgrow="ALWAYS">
+                    <Label styleClass="field-label" text="Description" />
+                    <VBox styleClass="text-field" VBox.vgrow="ALWAYS" >
+                        <Text fx:id="descriptionText" wrappingWidth="650" text="text" VBox.vgrow="ALWAYS" />
+                    </VBox>
+                </VBox>
+                <HBox alignment="CENTER_RIGHT">
+                    <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <Label text="Total" styleClass="field-label" />
+                        <Label fx:id="amountLabel" text="000.00">
+                            <font>
+                                <Font  name="System Bold" size="21.0" />
+                            </font>
+                        </Label>
+                    </VBox>
+                    <VBox>
+                        <Button fx:id="payButton" styleClass="btn-primary" onAction="#onPayment" text="Pay" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+        </VBox>
+
+    </ScrollPane>
+
+</VBox>
