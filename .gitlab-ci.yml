@@ -23,6 +23,18 @@ stages:
   - test
  # - deploy
 
+before_script:
+  - mkdir -p ~/.m2
+  - echo "<settings>
+      <servers>
+        <server>
+          <id>commons-module-repo</id>
+          <username>${MAVEN_USERNAME}</username>
+          <password>${MAVEN_PASSWORD}</password>
+        </server>
+      </servers>
+    </settings>" > ~/.m2/settings.xml
+
 cache:
   paths:
     - .m2/repository
