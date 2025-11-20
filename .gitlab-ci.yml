@@ -1,10 +1,4 @@
-
 variables:
-#   MAVEN_OPTS: >-
-#     -Dhttps.protocols=TLSv1.2
-#     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
-#     -Dorg.slf4j.simpleLogger.showDateTime=true
-#     -Djava.awt.headless=true
   MAVEN_CLI_OPTS: >-
     --batch-mode
     --errors
@@ -21,7 +15,6 @@ image: maven:3-openjdk-17
 stages:
   - build
   - test
- # - deploy
 
 before_script:
   - mkdir -p ~/.m2
@@ -32,22 +25,27 @@ before_script:
           <username>${MAVEN_USERNAME}</username>
           <password>${MAVEN_PASSWORD}</password>
         </server>
+        <server>
+          <id>transaction-module-repo</id>
+          <username>${MAVEN_USERNAME}</username>
+          <password>${MAVEN_PASSWORD}</password>
+        </server>
       </servers>
     </settings>" > ~/.m2/settings.xml
 
 cache:
   paths:
     - .m2/repository
-  key: "$CI_JOB_NAME" # Identificador único para evitar conflictos.
+  key: "$CI_JOB_NAME"
 
 build:
   stage: build
   script:
-      - echo "Build"
-      - 'mvn $MAVEN_CLI_OPTS clean install --settings ci_settings.xml'
+    - echo "Build"
+    - mvn $MAVEN_CLI_OPTS clean install --settings ~/.m2/settings.xml
 
 test:
   stage: test
   script:
     - echo "Test"
-    - 'mvn $MAVEN_CLI_OPTS clean test'
+    - mvn $MAVEN_CLI_OPTS clean test --settings ~/.m2/settings.xml
