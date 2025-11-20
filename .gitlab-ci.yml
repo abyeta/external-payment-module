@@ -48,4 +48,4 @@ test:
   stage: test
   script:
     - echo "Test"
-    - mvn $MAVEN_CLI_OPTS test --settings ~/.m2/settings.xml
+    - mvn $MAVEN_CLI_OPTS test --settings ci_settings.xml
