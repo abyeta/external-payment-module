@@ -14,4 +14,4 @@ build:
     stage: build
     script:
         - echo "Build"
-        - 'mvn clean install --settings ci_settings.xml'
+        - 'mvn clean install --settings c_settings.xml'
