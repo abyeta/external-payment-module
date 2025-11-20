@@ -14,6 +14,7 @@ image: maven:3-openjdk-17
 
 stages:
   - build
+  - linte
   - test
   - coverage
   - deploy
@@ -42,7 +43,7 @@ test:
       - target/   
 
 checkstyle:  
-  stage: test  
+  stage: linte  
   script:
     - echo "Checkstyle and linting testing."
     - mvn checkstyle:check
@@ -52,7 +53,7 @@ coverage:
   stage: coverage
   script:
     - echo "Coverage"
-    - 'mvn clean verify'
+    - 'mvn verify'
 
 deploy:
   stage: deploy
