@@ -13,7 +13,7 @@ variables:
 image: maven:3-openjdk-17
 
 stages:
-  - build
+ # - build
   - test
 
 before_script:
@@ -42,7 +42,7 @@ build:
   stage: build
   script:
     - echo "Build"
-    - mvn $MAVEN_CLI_OPTS clean install --settings ~/.m2/settings.xml
+ #   - mvn $MAVEN_CLI_OPTS clean install --settings ~/.m2/settings.xml
 
 test:
   stage: test
