@@ -16,23 +16,6 @@ stages:
   - build
   - test
 
-before_script:
-  - mkdir -p ~/.m2
-  - echo "<settings>
-      <servers>
-        <server>
-          <id>commons-module-repo</id>
-          <username>${MAVEN_USERNAME}</username>
-          <password>${MAVEN_PASSWORD}</password>
-        </server>
-        <server>
-          <id>transaction-module-repo</id>
-          <username>${MAVEN_USERNAME}</username>
-          <password>${MAVEN_PASSWORD}</password>
-        </server>
-      </servers>
-    </settings>" > ~/.m2/settings.xml
-
 cache:
   paths:
     - .m2/repository
@@ -42,7 +25,7 @@ build:
   stage: build
   script:
     - echo "Build"
-   # - mvn $MAVEN_CLI_OPTS clean install --settings ci_settings.xml
+    - mvn $MAVEN_CLI_OPTS clean install --settings ci_settings.xml
 
 test:
   stage: test
