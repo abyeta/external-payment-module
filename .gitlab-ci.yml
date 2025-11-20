@@ -16,6 +16,7 @@ stages:
   - build
   - test
   - coverage
+  - deploy
 
 cache:
   paths:
@@ -26,22 +27,35 @@ build:
   stage: build
   script:
     - echo "Build"
-    - mvn $MAVEN_CLI_OPTS clean install -DskipTests --settings ci_settings.xml
+    - mvn clean install -DskipTests --settings ci_settings.xml
+  artifacts:
+    paths:
+      - target/ 
 
 test:
   stage: test
   script:
     - echo "Test"
-    - mvn $MAVEN_CLI_OPTS test --settings ci_settings.xml
+    - mvn test --settings ci_settings.xml
+  artifacts:
+    paths:
+      - target/   
 
 checkstyle:  
   stage: test  
   script:
     - echo "Checkstyle and linting testing."
     - mvn checkstyle:check
+    
 
 coverage:
   stage: coverage
   script:
     - echo "Coverage"
     - 'mvn clean verify'
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deployment"
+    - 'mvn deploy -DskipTests --settings ci_settings.xml'
