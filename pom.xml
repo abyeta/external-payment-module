@@ -89,13 +89,27 @@
   </dependencies>
 
 
-  <!-- Should be included when add dependency to other gitlab project
     <repositories>
       <repository>
-        <id>base-module-repo</id>
-        <url>https://gitlab.com/api/v4/projects/{project_code}/packages/maven</url>
+        <id>commons-module-repo</id>
+        <url>https://gitlab.com/api/v4/projects/74907211/packages/maven</url>
       </repository>
-    </repositories> -->
+       <repository>
+        <id>transaction-module-repo</id>
+        <url>https://gitlab.com/api/v4/projects/74907273/packages/maven</url>
+      </repository>
+    </repositories>
+    <distributionManagement>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>https://gitlab.com/api/v4/projects/74907241/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>gitlab-maven</id>
+      <url>https://gitlab.com/api/v4/projects/74907241/packages/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
