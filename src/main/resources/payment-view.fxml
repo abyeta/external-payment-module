@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<StackPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:id="rootPane"
+          fx:controller="org.jala.university.presentation.controller.PaymentController"
+          stylesheets="@styles/external-service-styles.css"
+          prefHeight="500.0" prefWidth="750.0">
+
+    <GridPane>
+        <padding>
+            <Insets top="30" left="30" right="30" bottom="30" />
+        </padding>
+
+        <rowConstraints>
+            <RowConstraints percentHeight="20" />
+            <RowConstraints percentHeight="60" />
+            <RowConstraints percentHeight="20" />
+        </rowConstraints>
+
+        <columnConstraints>
+            <ColumnConstraints percentWidth="100" />
+        </columnConstraints>
+
+        <VBox GridPane.rowIndex="0">
+            <Label fx:id="serviceNameLabel" text="Service name" styleClass="page-title" />
+        </VBox>
+        <VBox GridPane.rowIndex="1" spacing="10">
+            <Label text="Account number" styleClass="field-label" />
+            <TextField fx:id="accountNumberField" promptText="Type the account number" styleClass="text-field" maxWidth="250"/>
+            <Label fx:id="feedbackLabel" styleClass="error-text" visible="false" wrapText="true"/>
+        </VBox>
+
+
+        <VBox GridPane.rowIndex="2" alignment="BOTTOM_LEFT" spacing="10">
+            <Separator />
+            <HBox>
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label text="Total" styleClass="field-label" />
+                    <Label fx:id="amountLabel" text="000.00">
+                        <font>
+                            <Font name="System Bold" size="21.0" />
+                        </font>
+                    </Label>
+                </VBox>
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="cancelButton" text="Cancel" onAction="#onCancel" style="-fx-background-color: rgb(43,156,223); -fx-min-width: 80; -fx-background-radius: 6px;-fx-padding: 10px 10px;"/>
+                    <Button fx:id="payButton" text="Pay" onAction="#onPay" style="-fx-background-color: rgba(105,227,139,0.97); -fx-min-width: 80; -fx-background-radius: 6px;-fx-padding: 10px 10px;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </GridPane>
+</StackPane>
