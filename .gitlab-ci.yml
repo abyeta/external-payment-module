@@ -42,8 +42,8 @@ build:
   stage: build
   script:
     - echo "Build"
-    - mvn $MAVEN_CLI_OPTS clean install --settings ~/.m2/settings.xml
-#
+    - mvn $MAVEN_CLI_OPTS clean install --settings ci_settings.xml
+
 test:
   stage: test
   script:
