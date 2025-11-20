@@ -20,7 +20,7 @@ image: maven:3-openjdk-17
 
 stages:
   - build
-#  - test
+  - test
  # - deploy
 
 cache:
@@ -33,3 +33,9 @@ build:
   script:
       - echo "Build"
       - 'mvn $MAVEN_CLI_OPTS clean install --settings ci_settings.xml'
+
+test:
+  stage: test
+  script:
+    - echo "Test"
+    - 'mvn $MAVEN_CLI_OPTS clean test'
