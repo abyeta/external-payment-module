@@ -1,8 +1,10 @@
 package org.jala.university.presentation;
 
 import lombok.Data;
+import org.jala.university.application.dto.CustomerDto;
 import org.jala.university.application.dto.ExternalServiceDto;
-import org.jala.university.application.dto.InvoiceDto;
+import org.jala.university.infrastructure.external.dto.invoice.InvoiceResponse;
+import org.jala.university.application.dto.PaymentInvoiceDto;
 
 import java.util.List;
 
@@ -10,8 +12,10 @@ import java.util.List;
 public final class GlobalContext {
 
     private ExternalServiceDto externalService;
-    private List<InvoiceDto> invoices;
-    private InvoiceDto invoice;
+    private CustomerDto customer;
+    private PaymentInvoiceDto paymentInvoice;
+    private List<InvoiceResponse> invoices;
+    private InvoiceResponse invoice;
     private String userCode;
     private static final GlobalContext INSTANCE = new GlobalContext();
 

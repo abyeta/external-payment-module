@@ -31,7 +31,7 @@ build:
     - mvn clean install -DskipTests --settings ci_settings.xml
   artifacts:
     paths:
-      - target/ 
+      - target/
 
 test:
   stage: test
@@ -40,14 +40,14 @@ test:
     - mvn test --settings ci_settings.xml
   artifacts:
     paths:
-      - target/   
+      - target/
 
-checkstyle:  
-  stage: linte  
+checkstyle:
+  stage: linte
   script:
     - echo "Checkstyle and linting testing."
     - mvn checkstyle:check
-    
+
 
 coverage:
   stage: coverage
@@ -60,5 +60,3 @@ deploy:
   script:
     - echo "Deployment"
     - 'mvn deploy -DskipTests --settings ci_settings.xml'
-  rules:
-  - if: '$CI_COMMIT_BRANCH == "main"'

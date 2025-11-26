@@ -16,6 +16,7 @@
     <class>org.jala.university.domain.entity.Holder</class>
     <class>org.jala.university.domain.entity.RegistrationDocument</class>
     <class>org.jala.university.domain.entity.Customer</class>
+    <class>org.jala.university.domain.entity.PaymentInvoice</class>
 
     <properties>
       <!-- Configuración de base de datos MySQL -->
@@ -29,7 +30,7 @@
       <!-- Configuración de Hibernate -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
-      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.use_sql_comments" value="true"/>
 

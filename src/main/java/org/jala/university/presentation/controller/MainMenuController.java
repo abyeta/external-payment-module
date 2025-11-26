@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 import org.jala.university.application.dto.ExternalServiceDto;
 import org.jala.university.application.mapper.ExternalServiceMapper;
 import org.jala.university.application.service.ExternalServiceRegistrationService;
-import org.jala.university.application.service.ExternalServiceRegistrationServiceImpl;
+import org.jala.university.application.service.impl.ExternalServiceRegistrationServiceImpl;
 import org.jala.university.application.validator.ServiceDataValidator;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;

@@ -5,9 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
-import org.jala.university.application.dto.InvoiceDto;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
+import org.jala.university.infrastructure.external.dto.invoice.InvoiceResponse;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.GlobalContext;
 
@@ -23,7 +23,7 @@ public final class InvoiceDetailsController extends BaseController {
     public Label expirationLabel;
     public Label serviceNameLabel;
 
-    private InvoiceDto invoice;
+    private InvoiceResponse invoice;
     private final GlobalContext globalContext = GlobalContext.getInstance();
 
     @FXML
@@ -38,12 +38,12 @@ public final class InvoiceDetailsController extends BaseController {
             return;
         }
 
-        userNameField.setText(invoice.getClientName());
+        userNameField.setText(invoice.getSubscription().getCustomer().getName());
         userCodeField.setText(globalContext.getUserCode());
-        invoiceCodeLabel.setText(invoice.getCode());
-        expirationLabel.setText(invoice.getExpirationDate());
+        invoiceCodeLabel.setText(invoice.getInvoiceNumber().toString());
+        expirationLabel.setText(invoice.getDueDate().toString());
         amountLabel.setText(String.valueOf(invoice.getAmount()));
-        descriptionText.setText(invoice.getDescription());
+        descriptionText.setText("Pague a tiempo evite recargos por mora");
         serviceNameLabel.setText(globalContext.getExternalService().getProviderName());
 
     }

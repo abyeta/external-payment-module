@@ -2,26 +2,37 @@ package org.jala.university.presentation.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import org.jala.university.ServiceFactory;
+import org.jala.university.application.dto.CustomerDto;
 import org.jala.university.application.dto.ExternalServiceDto;
-import org.jala.university.application.dto.InvoiceDto;
 import org.jala.university.application.dto.TransactionDto;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.jala.university.application.dto.*;
+import org.jala.university.application.factory.ServiceFactory;
 import org.jala.university.application.mapper.AccountMapper;
-import org.jala.university.application.mapper.InvoiceMapper;
 import org.jala.university.application.service.*;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
 import org.jala.university.domain.entity.Account;
 import org.jala.university.domain.entity.TransactionState;
-import org.jala.university.infrastructure.api.ServicesAPI;
+import org.jala.university.infrastructure.external.ApiClientFactory;
+import org.jala.university.infrastructure.external.dto.invoice.InvoiceResponse;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.GlobalContext;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public final class PaymentController extends BaseController {
 
@@ -34,26 +45,36 @@ public final class PaymentController extends BaseController {
     public Label amountLabel;
 
     private ExternalServiceDto  externalService;
-    private InvoiceDto invoice;
+    private InvoiceResponse invoice;
+    private CustomerDto customer;
 
-    private final AccountService accountService = ServiceFactory.getAccountService();
-    private final TransactionService transactionService = ServiceFactory.getTransactionService();
+    private final AccountService accountService = org.jala.university.ServiceFactory.getAccountService();
+    private final TransactionService transactionService = org.jala.university.ServiceFactory.getTransactionService();
     private final GlobalContext globalContext = GlobalContext.getInstance();
-    private final ExternalApiService service = new ExternalApiServiceImpl(new ServicesAPI(), new InvoiceMapper());
     private final AccountMapper accountMapper = new AccountMapper();
+    private final PaymentInvoiceService paymentInvoiceService = ServiceFactory.getPaymentInvoiceService();
+
+    private PdfGeneratorService pdfGenerator = null;
+
+    private PdfGeneratorService getPdfGenerator() {
+        if (pdfGenerator == null) {
+            pdfGenerator = new PdfGeneratorService();
+        }
+        return pdfGenerator;
+    }
 
     @FXML
     public void initialize() {
         if (globalContext.getExternalService() != null && globalContext.getInvoice() != null) {
             externalService = globalContext.getExternalService();
+            customer = globalContext.getCustomer();
             serviceNameLabel.setText(externalService.getProviderName());
             invoice = globalContext.getInvoice();
+            amountLabel.setText(String.valueOf(invoice.getAmount()));
         } else {
-            throw  new RuntimeException("External service or invoice not found");
+            throw new RuntimeException("External service or invoice not found");
         }
-        amountLabel.setText(String.valueOf(invoice.getAmount()));
         accountNumberField.setTextFormatter(createNumericFormatter());
-
     }
 
     public void onCancel(ActionEvent actionEvent) {
@@ -73,7 +94,7 @@ public final class PaymentController extends BaseController {
         try {
             Account userAccount = accountMapper.mapFrom(accountService.findByAccountNumber(userAccountNumber));
             Account serviceAccount = accountMapper.mapFrom(accountService.findByAccountNumber(serviceAccountNumber));
-            if (!accountService.validateSufficientBalance(userAccountNumber, invoice.getAmount())) {
+            if (!accountService.validateSufficientBalance(userAccountNumber, invoice.getAmount().doubleValue())) {
                 showFeedback("Insufficient balance");
                 return;
             }
@@ -81,15 +102,36 @@ public final class PaymentController extends BaseController {
             TransactionDto transactionDto = TransactionDto.builder()
                     .sourceAccount(userAccount)
                     .destinationAccount(serviceAccount)
-                    .amount(invoice.getAmount())
+                    .amount(invoice.getAmount().doubleValue())
                     .date(LocalDateTime.now())
                     .state(TransactionState.COMPLETED)
                     .build();
 
             TransactionDto dto = transactionService.createTransaction(transactionDto);
             if (dto != null && dto.getState() == TransactionState.COMPLETED) {
+
+                PaymentInvoiceDto paymentInvoiceDto = PaymentInvoiceDto.builder()
+                        .externalServiceId(externalService.getId())
+                        .customerId(customer.getId())
+                        .amount(invoice.getAmount().doubleValue())
+                        .serviceName(externalService.getProviderName())
+                        .serviceNumberReference(externalService.getAccountReference())
+                        .serviceEmail(externalService.getEmail() != null ? externalService.getEmail() : "")
+                        .paymentDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))
+                        .build();
+
+                PaymentInvoiceDto savedInvoice = paymentInvoiceService.savePaymentInvoice(paymentInvoiceDto);
+
+                // dto con todos los campos
+                savedInvoice.setServiceName(externalService.getProviderName());
+                savedInvoice.setServiceNumberReference(externalService.getAccountReference());
+                savedInvoice.setServiceEmail(externalService.getEmail() != null ? externalService.getEmail() : "");
+                savedInvoice.setPaymentDate(LocalDateTime.now().format(
+                        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+
+                globalContext.setPaymentInvoice(savedInvoice);
                 showPopUp();
-                service.updateStatus(invoice.getCode(), externalService.getAccountReference());
+                ApiClientFactory.invoices().payInvoice(invoice.getInvoiceNumber());
                 globalContext.getInvoices().remove(invoice);
             } else {
                 System.out.println("transaction not created");
@@ -170,8 +212,8 @@ public final class PaymentController extends BaseController {
                 + "-fx-background-radius: 6px; "
                 + "-fx-min-height: 40px;"
                 + "-fx-font-size: 13px; ");
-
         viewButton.setOnAction(event -> onViewInvoice());
+
         Button downloadButton = new Button("Download");
         downloadButton.setOnAction(event -> onDownload());
         downloadButton.setStyle("-fx-background-color: rgba(105,227,139,0.97); "
@@ -202,10 +244,52 @@ public final class PaymentController extends BaseController {
     }
 
     public void onViewInvoice() {
-        //TODO here will go the change to view invoice view
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().
+                    getResource(ExternalPaymentView.PAYMENT_INVOICE.getView().getFileName()));
+            Parent view = loader.load();
+            Stage newWindow = new Stage();
+            newWindow.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(view);
+            newWindow.setScene(scene);
+            newWindow.showAndWait();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void onDownload() {
-        //TODO here will go the download process
+        PaymentInvoiceDto dto = GlobalContext.getInstance().getPaymentInvoice();
+
+        if (dto == null || dto.getId() == null) {
+            new Alert(Alert.AlertType.WARNING, "No hay comprobante válido para descargar").showAndWait();
+            return;
+        }
+
+        try {
+            byte[] pdfBytes = getPdfGenerator().generarComprobante(dto.getId());
+
+            String fileName = String.format("Comprobante_%s_%s.pdf",
+                    dto.getServiceName().replaceAll("[^a-zA-Z0-9_-]", "_"),
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+            );
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Guardar comprobante de pago");
+            fileChooser.setInitialFileName(fileName);
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF (*.pdf)", "*.pdf"));
+
+            File archivo = fileChooser.showSaveDialog(null);
+            if (archivo != null) {
+                Files.write(archivo.toPath(), pdfBytes);
+                new Alert(Alert.AlertType.INFORMATION,
+                        "¡Comprobante descargado correctamente!\n" + archivo.getName()).showAndWait();
+            }
+
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR,
+                    "Error al generar el PDF:\n" + e.getMessage()).showAndWait();
+            e.printStackTrace();
+        }
     }
 }

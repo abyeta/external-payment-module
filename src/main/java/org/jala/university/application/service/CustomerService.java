@@ -17,7 +17,7 @@ public interface CustomerService {
      * @param customerId the customer ID
      * @return list of linked services
      */
-    List<ExternalServiceDto> getLinkedServices(UUID customerId);
+    List<ExternalServiceDto> getLinkedServices(Long customerId);
 
     /**
      * Links an external service to a customer.
@@ -27,7 +27,7 @@ public interface CustomerService {
      * @throws IllegalArgumentException if customer or service not found
      * @throws IllegalStateException if service is not enabled
      */
-    void linkService(UUID customerId, UUID serviceId);
+    void linkService(Long customerId, UUID serviceId);
 
     /**
      * Unlinks an external service from a customer.
@@ -35,7 +35,7 @@ public interface CustomerService {
      * @param customerId the customer ID
      * @param serviceId the service ID to unlink
      */
-    void unlinkService(UUID customerId, UUID serviceId);
+    void unlinkService(Long customerId, UUID serviceId);
 
     /**
      * Checks if a service is already linked to a customer.
@@ -44,7 +44,7 @@ public interface CustomerService {
      * @param serviceId the service ID
      * @return true if linked, false otherwise
      */
-    boolean isServiceLinked(UUID customerId, UUID serviceId);
+    boolean isServiceLinked(Long customerId, UUID serviceId);
 }
 
 

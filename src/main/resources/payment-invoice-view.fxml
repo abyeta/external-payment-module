@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.jala.university.presentation.controller.PaymentInvoiceController"
+           stylesheets="@styles/external-service-styles.css"
+           prefHeight="400.0" prefWidth="400.0">
+
+
+    <VBox spacing="10">
+        <padding>
+            <Insets right="30" left="30" top="30" bottom="30" />
+        </padding>
+
+        <Label text="Payment invoice" styleClass="page-title" />
+
+        <VBox spacing="10" styleClass="form-container" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets right="15" left="15" top="15" bottom="15" />
+            </padding>
+
+            <VBox spacing="15">
+                <VBox spacing="2">
+                    <Label text="Service name" styleClass="field-label" />
+                    <Label fx:id="serviceNameLabel" text="example"/>
+                </VBox>
+
+                <VBox spacing="2">
+                    <Label text="service email" styleClass="field-label"/>
+                    <Label fx:id="serviceEmailLabel" text="example" />
+                </VBox>
+
+                <VBox spacing="2">
+                    <Label text="Service number reference" styleClass="field-label" />
+                    <Label fx:id="serviceNumberReferenceLabel" text="example" />
+                </VBox>
+
+                <VBox spacing="2">
+                    <Label text="Date of payment" styleClass="field-label" />
+                    <Label fx:id="paymentDateField" text="dd/mm/yyyy HH-MM" />
+                </VBox>
+
+                <VBox spacing="2" alignment="CENTER_RIGHT">
+                    <Label text="Amount" styleClass="field-label" />
+                    <Label fx:id="amountLabel" text="000.00">
+                        <font>
+                            <Font  name="System Bold" size="21.0" />
+                        </font>
+                    </Label>
+                </VBox>
+            </VBox>
+            <Separator />
+            <HBox>
+                <HBox alignment="CENTER_LEFT" HBox.hgrow="NEVER">
+                    <Button onAction="#onExit" text="Exit" style="-fx-background-color: rgb(255,75,75); -fx-min-width: 80; -fx-background-radius: 6px;-fx-padding: 8px 8px;"/>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                    <Button onAction="#onDownload" text="Download" style="-fx-background-color: rgb(43,156,223); -fx-min-width: 80; -fx-background-radius: 6px;-fx-padding: 8px 8px;"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

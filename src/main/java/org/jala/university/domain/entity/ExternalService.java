@@ -79,6 +79,9 @@ public final class ExternalService implements BaseEntity<UUID> {
     @OneToMany(mappedBy = "externalService", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RegistrationDocument> documents;
 
+    @OneToMany(mappedBy = "externalService")
+    private List<PaymentInvoice> paymentInvoices;
+
     @Override
     public UUID getId() {
         return id;

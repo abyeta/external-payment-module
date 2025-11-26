@@ -4,8 +4,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.jala.university.application.mapper.ExternalServiceMapper;
+import org.jala.university.application.mapper.PaymentInvoiceMapper;
 import org.jala.university.application.mapper.RegistrationDocumentMapper;
 import org.jala.university.application.service.*;
+import org.jala.university.application.service.impl.*;
+import org.jala.university.application.service.impl.PaymentInvoiceServiceImpl;
 import org.jala.university.application.validator.ServiceDataValidator;
 import org.jala.university.domain.repository.*;
 import org.jala.university.infrastructure.persistance.*;
@@ -18,6 +21,7 @@ public final class ServiceFactory {
     private static ExternalServiceUpdateService updateService;
     private static RegistrationDocumentService documentService;
     private static CustomerService customerServiceLinkService;
+    private static PaymentInvoiceService paymentInvoiceService;
 
     private ServiceFactory() { }
 
@@ -26,6 +30,24 @@ public final class ServiceFactory {
             validator = new ServiceDataValidator();
         }
         return validator;
+    }
+
+    public static synchronized PaymentInvoiceService getPaymentInvoiceService() {
+        if (paymentInvoiceService != null) {
+            return paymentInvoiceService;
+        }
+        EntityManager em = getEntityManager();
+        PaymentInvoiceRepository repo = new PaymentInvoiceRepositoryImpl(em);
+        CustomerRepository custRepo = new CustomerRepositoryImpl(em);
+        ExternalServiceRepository externalRepo = new ExternalServiceRepositoryImpl(em);
+        PaymentInvoiceMapper mapper = new PaymentInvoiceMapper();
+        paymentInvoiceService = new PaymentInvoiceServiceImpl(
+                repo,
+                custRepo,
+                externalRepo,
+                mapper
+        );
+        return paymentInvoiceService;
     }
 
     public static synchronized ExternalServiceRegistrationService getRegistrationService() {

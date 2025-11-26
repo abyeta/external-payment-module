@@ -11,12 +11,13 @@ import java.util.UUID;
  * Repository interface for Customer entity operations.
  * Extends the base Repository interface for basic CRUD operations.
  */
-public interface CustomerRepository extends Repository<Customer, UUID> {
+public interface CustomerRepository extends Repository<Customer, Long> {
 
-    List<ExternalService> getLinkedServices(UUID customerId);
-    void linkService(UUID customerId, UUID serviceId);
-    void unlinkService(UUID customerId, UUID serviceId);
-    boolean isServiceLinked(UUID customerId, UUID serviceId);
+    List<ExternalService> getLinkedServices(Long customerId);
+    void linkService(Long customerId, UUID serviceId);
+    void unlinkService(Long customerId, UUID serviceId);
+    boolean isServiceLinked(Long customerId, UUID serviceId);
 }
+
 
 

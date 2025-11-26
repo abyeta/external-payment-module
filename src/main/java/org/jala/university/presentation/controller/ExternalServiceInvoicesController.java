@@ -10,9 +10,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.jala.university.application.dto.ExternalServiceDto;
-import org.jala.university.application.dto.InvoiceDto;
 import org.jala.university.commons.presentation.BaseController;
 import org.jala.university.commons.presentation.ViewSwitcher;
+import org.jala.university.infrastructure.external.dto.invoice.InvoiceResponse;
 import org.jala.university.presentation.ExternalPaymentView;
 import org.jala.university.presentation.GlobalContext;
 
@@ -28,7 +28,7 @@ public final class ExternalServiceInvoicesController extends BaseController {
     public Label serviceNameLabel;
 
     private ExternalServiceDto externalService;
-    private List<InvoiceDto>  invoices;
+    private List<InvoiceResponse>  invoices;
 
     private final GlobalContext globalContext =  GlobalContext.getInstance();
 
@@ -51,14 +51,14 @@ public final class ExternalServiceInvoicesController extends BaseController {
             return;
         }
 
-        for (InvoiceDto invoice : invoices) {
+        for (InvoiceResponse invoice : invoices) {
             HBox sectionBox = setInvoiceBox(invoice);
             invoicesTableContainer.getChildren().add(sectionBox);
         }
 
     }
 
-    public HBox setInvoiceBox(InvoiceDto dto) {
+    public HBox setInvoiceBox(InvoiceResponse dto) {
         HBox invoiceBox =  new HBox();
         invoiceBox.setAlignment(Pos.CENTER_LEFT);
         invoiceBox.setStyle("-fx-background-color: white; "
@@ -78,7 +78,7 @@ public final class ExternalServiceInvoicesController extends BaseController {
         Label serviceTypeLabel = new Label("Example Service Type");
         serviceTypeLabel.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(serviceTypeLabel, Priority.ALWAYS);
-        Label codeLabel = createColumnLabel(dto.getCode(), MIN_CODE_WIDTH);
+        Label codeLabel = createColumnLabel(dto.getInvoiceNumber().toString(), MIN_CODE_WIDTH);
         Label statusLabel = createColumnLabel(dto.getStatus(), MIN_WIDTH);
         Label amountLabel = createColumnLabel(String.valueOf(dto.getAmount()), MIN_WIDTH);
         HBox actionBox = createActionButtons(dto);
@@ -88,7 +88,7 @@ public final class ExternalServiceInvoicesController extends BaseController {
     }
 
     //Create the action buttons for every invoice
-    public HBox createActionButtons(InvoiceDto dto) {
+    public HBox createActionButtons(InvoiceResponse dto) {
         final int spacing = 6;
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.TOP_CENTER);
@@ -118,12 +118,12 @@ public final class ExternalServiceInvoicesController extends BaseController {
         return button;
     }
 
-    public void onView(InvoiceDto dto) {
+    public void onView(InvoiceResponse dto) {
         globalContext.setInvoice(dto);
         ViewSwitcher.switchTo(ExternalPaymentView.INVOICE_DETAILS.getView());
     }
 
-    public void onPay(InvoiceDto invoiceDto) {
+    public void onPay(InvoiceResponse invoiceDto) {
         globalContext.setInvoice(invoiceDto);
         ViewSwitcher.switchTo(ExternalPaymentView.PAYMENT.getView());
     }
@@ -142,5 +142,9 @@ public final class ExternalServiceInvoicesController extends BaseController {
 
     public void onBackExternalService(ActionEvent actionEvent) {
         ViewSwitcher.switchTo(ExternalPaymentView.EXTERNAL_SERVICE.getView());
+    }
+
+    public void onGoToPaymentHistory(ActionEvent actionEvent) {
+        ViewSwitcher.switchTo(ExternalPaymentView.PAYMENT_HISTORY.getView());
     }
 }
