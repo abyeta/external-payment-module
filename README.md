@@ -1,93 +1,174 @@
-# external-payment-module
+# 💳 Módulo de Pagos Externos
 
+Sistema de gestión de pagos para servicios externos desarrollado en Java con interfaz gráfica JavaFX.
 
+## 📋 Descripción
 
-## Getting started
+Este módulo permite gestionar el registro de servicios externos, clientes y el procesamiento de facturas de pago. Cuenta con una interfaz gráfica intuitiva desarrollada con JavaFX y utiliza una base de datos MySQL para la persistencia de datos.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## ✨ Características
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- 📝 Registro y gestión de servicios externos
+- 👥 Administración de clientes
+- 💰 Procesamiento de facturas de pago
+- 📄 Generación de documentos PDF
+- 🔍 Historial de pagos
+- 🎨 Interfaz gráfica moderna con JavaFX
 
-## Add your files
+## 🛠️ Tecnologías Utilizadas
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- **Java 17**
+- **JavaFX 22** - Interfaz gráfica
+- **Spring Boot 3.2.4** - Framework principal
+- **JPA/Hibernate** - Persistencia de datos
+- **MySQL** - Base de datos
+- **Maven** - Gestión de dependencias
+- **Lombok** - Reducción de código boilerplate
+- **JUnit 5 + Mockito** - Testing
+- **Apache PDFBox** - Generación de PDFs
+- **OkHttp** - Cliente HTTP
+- **Gson** - Procesamiento JSON
+
+## 📁 Estructura del Proyecto
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/jala-university1/cohort-2/desarrollo-de-software-2-es/practitioners/capstone/external-payment-module.git
-git branch -M main
-git push -uf origin main
+src/
+├── main/
+│   ├── java/org/jala/university/
+│   │   ├── application/        # Lógica de aplicación y servicios
+│   │   ├── domain/             # Entidades y repositorios
+│   │   ├── infrastructure/     # Implementación de persistencia
+│   │   ├── presentation/       # Controladores de la UI
+│   │   └── MainApp.java        # Punto de entrada
+│   └── resources/
+│       ├── *.fxml              # Vistas de JavaFX
+│       ├── styles/             # Estilos CSS
+│       └── sql/                # Scripts de base de datos
+└── test/                       # Pruebas unitarias
 ```
 
-## Integrate with your tools
+## 🚀 Requisitos Previos
 
-- [ ] [Set up project integrations](https://gitlab.com/jala-university1/cohort-2/desarrollo-de-software-2-es/practitioners/capstone/external-payment-module/-/settings/integrations)
+- Java JDK 17 o superior
+- Maven 3.6 o superior
+- MySQL 8.0 o superior
+- Git
 
-## Collaborate with your team
+## ⚙️ Instalación y Configuración
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### 1. Clonar el repositorio
 
-## Test and Deploy
+```bash
+git clone https://gitlab.com/jala-university1/cohort-2/desarrollo-de-software-2-es/practitioners/capstone/external-payment-module.git
+cd external-payment-module
+```
 
-Use the built-in continuous integration in GitLab.
+### 2. Configurar la base de datos
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```bash
+# Crear la base de datos ejecutando el script
+mysql -u root -p < src/main/resources/sql/create_database.sql
+```
 
-***
+### 3. Configurar la persistencia
 
-# Editing this README
+Edita el archivo `src/main/resources/META-INF/persistence.xml` con tus credenciales de MySQL:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```xml
+<property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/tu_base_de_datos"/>
+<property name="jakarta.persistence.jdbc.user" value="tu_usuario"/>
+<property name="jakarta.persistence.jdbc.password" value="tu_contraseña"/>
+```
 
-## Suggestions for a good README
+### 4. Instalar dependencias
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```bash
+mvn clean install
+```
 
-## Name
-Choose a self-explaining name for your project.
+## 🎯 Ejecución
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+### Ejecutar la aplicación
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```bash
+mvn javafx:run
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+O ejecutar el JAR empaquetado:
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```bash
+java -jar target/external-payment-module-1.0-SNAPSHOT-shaded.jar
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Ejecutar pruebas
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+```bash
+mvn test
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### Generar reporte de cobertura
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+```bash
+mvn clean test
+# El reporte se genera en: target/site/jacoco/index.html
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Verificar estilo de código
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```bash
+mvn checkstyle:check
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## 📦 Dependencias de Módulos
 
-## License
-For open source projects, say how it is licensed.
+Este proyecto depende de otros módulos internos:
+- `commons-module` (v1.0-SNAPSHOT)
+- `transaction-module` (v1.0-SNAPSHOT)
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Estos módulos se obtienen automáticamente desde los repositorios de GitLab configurados en el `pom.xml`.
+
+## 🧪 Testing
+
+El proyecto utiliza:
+- **JUnit 5** para pruebas unitarias
+- **Mockito** para mocking
+- **JaCoCo** para cobertura de código (mínimo 50%)
+
+Ejecutar todas las pruebas:
+
+```bash
+mvn clean verify
+```
+
+## 📊 Cobertura de Código
+
+El proyecto requiere un mínimo de 50% de cobertura de código. Para ver el reporte:
+
+1. Ejecuta `mvn test`
+2. Abre `target/site/jacoco/index.html` en tu navegador
+
+## 🐳 Docker
+
+El proyecto incluye un archivo `compose.yml` para facilitar el despliegue con Docker:
+
+```bash
+docker-compose up
+```
+
+## 📄 Licencia
+
+Este proyecto es parte del programa académico de Jala University.
+
+## 👥 Autores
+
+Proyecto Capstone - Jala University Cohort 5 - Desarrollo de Software 2
+
+- **Abigail Quiroz** - STU-1027.ARG.C5
+- **Carla Mayoli Catari Calderon**
+- **Luis Eduardo Barajas Cabrera** - STU-1112.COL.C5
+- **Rodys Enrique Rodriguez Santamaria** - STU-1083.COL.C5
+- **Jean Pierre Crespin Huaman** - STU-943.ARG-C5
+
+---
+
+**Jala University** © 2025

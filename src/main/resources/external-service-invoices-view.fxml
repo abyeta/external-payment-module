@@ -15,13 +15,31 @@
         <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
     </padding>
 
-    <HBox spacing="10">
+    <HBox spacing="10" alignment="CENTER_LEFT">
         <Button fx:id="backButton" onAction="#onBackExternalService" styleClass="btn-back" text="Return to external service" />
     </HBox>
 
-    <VBox alignment="CENTER_RIGHT" GridPane.rowIndex="0">
+    <VBox alignment="CENTER_LEFT" GridPane.rowIndex="0">
+        <VBox.margin>
+            <Insets top="15.0" />
+        </VBox.margin>
         <Label text="Service name" fx:id="serviceNameLabel" styleClass="page-title" />
     </VBox>
+
+    <!-- My Payments and Invoices Button -->
+    <HBox alignment="CENTER_RIGHT">
+        <VBox.margin>
+            <Insets top="15.0" bottom="15.0" />
+        </VBox.margin>
+        <Button fx:id="paymentHistoryButton" 
+                onAction="#onGoToPaymentHistory" 
+                text="📄 My Payments and Invoices"
+                style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10 20; -fx-border-radius: 6px; -fx-background-radius: 6px;">
+            <font>
+                <Font name="System Bold" size="14.0"/>
+            </font>
+        </Button>
+    </HBox>
 
     <VBox styleClass="form-container" VBox.vgrow="ALWAYS">
         <padding>

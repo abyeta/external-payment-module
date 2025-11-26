@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.jala.university.presentation.controller.PaymentHistoryController"
+      stylesheets="@styles/external-service-styles.css"
+      prefHeight="700.0" prefWidth="1100.0">
+
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
+    </padding>
+
+    <!-- Back Button -->
+    <HBox spacing="10">
+        <VBox.margin>
+            <Insets bottom="20.0" />
+        </VBox.margin>
+        <Button fx:id="backButton" onAction="#onBackToMenu" styleClass="btn-back" text="← Return to services" />
+    </HBox>
+
+    <!-- Title -->
+    <VBox alignment="CENTER_LEFT">
+        <VBox.margin>
+            <Insets bottom="10.0" />
+        </VBox.margin>
+        <Label text="My Payments and Invoices" styleClass="page-title">
+            <font>
+                <Font name="System Bold" size="28.0" />
+            </font>
+        </Label>
+        <Label text="Review and manage your external payment history." 
+               style="-fx-text-fill: #6c757d; -fx-font-size: 14px;">
+            <VBox.margin>
+                <Insets top="8.0" />
+            </VBox.margin>
+        </Label>
+    </VBox>
+
+    <!-- Table Container -->
+    <VBox styleClass="form-container" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="30.0" right="30.0" bottom="30.0" left="30.0" />
+        </padding>
+
+        <!-- Column Headers -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <VBox.margin>
+                <Insets bottom="10.0" />
+            </VBox.margin>
+            <Label text="DATE" style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-font-weight: bold; -fx-min-width: 180px; -fx-pref-width: 180px; -fx-max-width: 180px; -fx-alignment: CENTER_LEFT;">
+                <font>
+                    <Font name="System Bold" size="11.0" />
+                </font>
+            </Label>
+            <Label text="SERVICE/PROVIDER" style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-font-weight: bold; -fx-max-width: Infinity;" HBox.hgrow="ALWAYS">
+                <font>
+                    <Font name="System Bold" size="11.0" />
+                </font>
+            </Label>
+            <Label text="AMOUNT" style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-font-weight: bold; -fx-min-width: 200px; -fx-pref-width: 200px; -fx-max-width: 200px; -fx-alignment: CENTER_LEFT;">
+                <font>
+                    <Font name="System Bold" size="11.0" />
+                </font>
+            </Label>
+            <Label text="ACTIONS" style="-fx-text-fill: #6c757d; -fx-font-size: 11px; -fx-font-weight: bold; -fx-min-width: 200px; -fx-pref-width: 200px; -fx-max-width: 200px; -fx-alignment: CENTER;">
+                <font>
+                    <Font name="System Bold" size="11.0" />
+                </font>
+            </Label>
+        </HBox>
+
+        <Separator />
+
+        <!-- Payments Container with Scroll -->
+        <ScrollPane fx:id="paymentsScrollPane" 
+                    fitToWidth="true" 
+                    hbarPolicy="NEVER" 
+                    vbarPolicy="AS_NEEDED"
+                    style="-fx-background-color: white; -fx-border-color: transparent;"
+                    VBox.vgrow="ALWAYS">
+            <VBox fx:id="paymentsTableContainer" 
+                  spacing="5" 
+                  style="-fx-background-color: white;" />
+        </ScrollPane>
+    </VBox>
+
+</VBox>
+

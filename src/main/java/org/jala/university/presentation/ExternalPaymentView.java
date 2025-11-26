@@ -12,7 +12,10 @@ public enum ExternalPaymentView {
     EXTERNAL_SERVICE_INVOICES("external-service-invoices-view.fxml"),
     EXTERNAL_SERVICE_REGISTRATION("external-service-registration-view.fxml"),
     PAYMENT("payment-view.fxml"),
-    USER_HOME("user-home-view.fxml");
+    USER_HOME("user-home-view.fxml"),
+    PAYMENT_INVOICE("payment-invoice-view.fxml"),
+    PAYMENT_HISTORY("payment-history-view.fxml");
+
 
     private final View view;
     ExternalPaymentView(String fileName) {

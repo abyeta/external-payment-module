@@ -5,7 +5,6 @@ import lombok.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * DTO representing a customer entity.
@@ -14,10 +13,11 @@ import java.util.UUID;
 @Value
 @Builder
 public class CustomerDto {
-    UUID id;
+    Long id;
     String name;
     List<ExternalServiceDto> linkedServices;
     LocalDateTime createdAt;
 }
+
 
 

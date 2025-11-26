@@ -16,7 +16,7 @@ import java.util.UUID;
  * Extends CrudRepository to inherit basic CRUD operations.
  */
 public class CustomerRepositoryImpl
-        extends CrudRepository<Customer, UUID>
+        extends CrudRepository<Customer, Long>
         implements CustomerRepository {
 
     /**
@@ -36,7 +36,7 @@ public class CustomerRepositoryImpl
      * @throws IllegalArgumentException if the customer is not found
      */
     @Override
-    public List<ExternalService> getLinkedServices(UUID customerId) {
+    public List<ExternalService> getLinkedServices(Long customerId) {
         try {
             // Fetch customer with linked services
             String jpql = "SELECT c FROM Customer c "
@@ -64,7 +64,7 @@ public class CustomerRepositoryImpl
      * @throws IllegalStateException if the service is not enabled
      */
     @Override
-    public void linkService(UUID customerId, UUID serviceId) {
+    public void linkService(Long customerId, UUID serviceId) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
@@ -104,7 +104,7 @@ public class CustomerRepositoryImpl
      * @param serviceId the unique identifier of the service to unlink
      */
     @Override
-    public void unlinkService(UUID customerId, UUID serviceId) {
+    public void unlinkService(Long customerId, UUID serviceId) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
@@ -142,7 +142,7 @@ public class CustomerRepositoryImpl
      * @return true if the service is linked to the customer, false otherwise
      */
     @Override
-    public boolean isServiceLinked(UUID customerId, UUID serviceId) {
+    public boolean isServiceLinked(Long customerId, UUID serviceId) {
         String jpql = "SELECT COUNT(s) FROM Customer c "
                 + "JOIN c.linkedServices s "
                 + "WHERE c.id = :customerId AND s.id = :serviceId";

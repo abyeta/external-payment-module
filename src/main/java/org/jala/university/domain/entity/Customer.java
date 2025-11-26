@@ -21,12 +21,11 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class Customer implements BaseEntity<UUID> {
+public final class Customer implements BaseEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -44,8 +43,12 @@ public final class Customer implements BaseEntity<UUID> {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "customer",  fetch = FetchType.LAZY)
+    private List<PaymentInvoice> paymentInvoices;
+
+
     @Override
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 

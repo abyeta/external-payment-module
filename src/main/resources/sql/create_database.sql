@@ -119,3 +119,9 @@ CREATE TABLE customer_services (
 COMMENT='Links between customers and external services';
 
 
+INSERT INTO customers (id, name, created_at)
+VALUES (
+           UNHEX(REPLACE('263047bc-d10e-4141-ad91-7c1b4b8c1ac4', '-', '')),
+           'Juan Pérez',
+           NOW(6)
+       );

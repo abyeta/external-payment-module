@@ -8,6 +8,78 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.10</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>PACKAGE</element>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.50</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.50</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/MainApp.class</exclude>
+            <exclude>**/presentation/MainView.class</exclude>
+            <exclude>**/dto/*Dto.class</exclude>
+            <exclude>**/dto/*Dto$*.class</exclude>
+            <exclude>**/entity/*.class</exclude>
+            <exclude>**/mapper/*.class</exclude>
+            <exclude>**/presentation/**/*.class</exclude>
+            <exclude>**/validator/*.class</exclude>
+            <exclude>**/factory/*.class</exclude>
+            <exclude>**/GlobalContext.class</exclude>
+            <exclude>**/infrastructure/external/**/*.class</exclude>
+            <exclude>**/external/dto/**/*.class</exclude>
+            <exclude>**/external/config/**/*.class</exclude>
+            <exclude>**/external/endpoints/**/*.class</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.6.0</version>
         <executions>
@@ -55,8 +127,38 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.12</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>commons-module-repo</id>
+      <url>https://gitlab.com/api/v4/projects/74907211/packages/maven</url>
+    </repository>
+    <repository>
+      <id>transaction-module-repo</id>
+      <url>https://gitlab.com/api/v4/projects/74907273/packages/maven</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -81,26 +183,44 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.5.0</version>
+      <version>5.14.2</version>
       <scope>test</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>byte-buddy-agent</artifactId>
-          <groupId>net.bytebuddy</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>objenesis</artifactId>
           <groupId>org.objenesis</groupId>
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>5.14.2</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit-jupiter-api</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>https://gitlab.com/api/v4/projects/74907241/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>gitlab-maven</id>
+      <url>https://gitlab.com/api/v4/projects/74907241/packages/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
     <commons.module.version>1.0-SNAPSHOT</commons.module.version>
     <maven.compiler.source>17</maven.compiler.source>
     <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     <spring.boot.version>3.2.4</spring.boot.version>
-    <lombok.version>1.18.28</lombok.version>
+    <lombok.version>1.18.30</lombok.version>
     <maven.compiler.target>17</maven.compiler.target>
     <jakarta.persistence.version>3.1.0</jakarta.persistence.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
