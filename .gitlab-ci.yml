@@ -60,3 +60,5 @@ deploy:
   script:
     - echo "Deployment"
     - 'mvn deploy -DskipTests --settings ci_settings.xml'
+  rules:
+  - if: '$CI_COMMIT_BRANCH == "release/1.0"'
