@@ -1,4 +1,4 @@
 /.idea
 /target
-
+/.gitlab-ci.yml
 /src/main/java/test
