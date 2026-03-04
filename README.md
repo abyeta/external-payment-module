@@ -163,11 +163,11 @@ Este proyecto es parte del programa académico de Jala University.
 
 Proyecto Capstone - Jala University Cohort 5 - Desarrollo de Software 2
 
-- **Abigail Quiroz** - STU-1027.ARG.C5
+- **Abigail Quiroz** 
 - **Carla Mayoli Catari Calderon**
-- **Luis Eduardo Barajas Cabrera** - STU-1112.COL.C5
-- **Rodys Enrique Rodriguez Santamaria** - STU-1083.COL.C5
-- **Jean Pierre Crespin Huaman** - STU-943.ARG-C5
+- **Luis Eduardo Barajas Cabrera** 
+- **Rodys Enrique Rodriguez Santamaria** 
+- **Jean Pierre Crespin Huaman** 
 
 ---
 
